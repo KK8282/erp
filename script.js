@@ -46,50 +46,90 @@ function setTheme(theme) {
 // Holds dynamically parsed student records from students.xlsx
 let STUDENTS_DB = [];
 
-// Flexible parser for Excel header rows
-function parseRowsToStudents(rows) {
-  return rows.map(r => {
-    // Collect all keys in case-insensitive fashion
-    const keys = Object.keys(r);
-    const getVal = (aliases) => {
-      for (const alias of aliases) {
-        const found = keys.find(k => k.trim().toLowerCase() === alias.toLowerCase());
-        if (found && r[found] !== undefined && r[found] !== null && String(r[found]).trim() !== "") {
-          return String(r[found]).trim();
-        }
-      }
-      return "";
-    };
+// Flexible parser that scans 2D arrays to skip college title banners/empty rows
+function parseExcelWorksheet(worksheet) {
+  // Convert worksheet to a 2D array of rows
+  const rawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+  if (!rawRows || rawRows.length === 0) return [];
 
-    return {
-      reg: getVal(['reg', 'roll no', 'roll number', 'register no', 'reg no', 'registration no', 'reg.no', 'roll_no']),
-      name: getVal(['name', 'student name', 'student_name', 'candidate name']),
-      batch: getVal(['batch', 'academic year']) || "2023-2027",
-      dept: getVal(['dept', 'department', 'branch']) || "B.Tech AI&DS",
-      att: getVal(['att', 'attendance', 'attendance %', 'percentage']) || "90.0%",
-      pin: getVal(['pin', 'password', 'passcode']) || "1234",
-      address: getVal(['address', 'native', 'location', 'city']) || "",
-      cgpa: getVal(['cgpa', 'gpa', 'grade point']) || "8.50"
-    };
-  }).filter(s => s.reg !== "");
+  // Look for the row containing headers like 'reg', 'roll', 'name'
+  let headerRowIndex = -1;
+  const regAliases = ['reg', 'roll', 'register', 'reg.no', 'reg no', 'roll no', 'registration'];
+  
+  for (let r = 0; r < Math.min(rawRows.length, 15); r++) {
+    const rowValues = rawRows[r].map(cell => String(cell).trim().toLowerCase());
+    if (rowValues.some(cell => regAliases.some(alias => cell.includes(alias)))) {
+      headerRowIndex = r;
+      break;
+    }
+  }
+
+  // Fallback to row 0 if no explicit header row is found
+  if (headerRowIndex === -1) headerRowIndex = 0;
+
+  const headerRow = rawRows[headerRowIndex].map(h => String(h).trim().toLowerCase());
+
+  const findColIdx = (keywords) => {
+    return headerRow.findIndex(h => keywords.some(k => h.includes(k)));
+  };
+
+  const regIdx = findColIdx(['reg', 'roll', 'register']);
+  const nameIdx = findColIdx(['name', 'student']);
+  const batchIdx = findColIdx(['batch', 'year']);
+  const deptIdx = findColIdx(['dept', 'branch', 'department']);
+  const attIdx = findColIdx(['att', 'attendance', '%']);
+  const pinIdx = findColIdx(['pin', 'pass', 'code']);
+  const addrIdx = findColIdx(['addr', 'city', 'native', 'location']);
+  const cgpaIdx = findColIdx(['cgpa', 'gpa', 'mark', 'grade']);
+
+  const parsedStudents = [];
+
+  for (let r = headerRowIndex + 1; r < rawRows.length; r++) {
+    const row = rawRows[r];
+    if (!row || row.length === 0) continue;
+
+    const regVal = regIdx !== -1 && row[regIdx] !== undefined ? String(row[regIdx]).trim() : "";
+    
+    // Ignore rows that don't have a valid alphanumeric register or roll number
+    if (!regVal || regVal.toLowerCase().includes('total') || regVal.toLowerCase().includes('roll')) {
+      continue;
+    }
+
+    const nameVal = nameIdx !== -1 && row[nameIdx] !== undefined ? String(row[nameIdx]).trim() : "Student";
+    const batchVal = batchIdx !== -1 && row[batchIdx] !== undefined && String(row[batchIdx]).trim() !== "" ? String(row[batchIdx]).trim() : "2023-2027";
+    const deptVal = deptIdx !== -1 && row[deptIdx] !== undefined && String(row[deptIdx]).trim() !== "" ? String(row[deptIdx]).trim() : "B.Tech AI&DS";
+    const attVal = attIdx !== -1 && row[attIdx] !== undefined && String(row[attIdx]).trim() !== "" ? String(row[attIdx]).trim() : "91.8%";
+    const pinVal = pinIdx !== -1 && row[pinIdx] !== undefined && String(row[pinIdx]).trim() !== "" ? String(row[pinIdx]).trim() : "1234";
+    const addrVal = addrIdx !== -1 && row[addrIdx] !== undefined ? String(row[addrIdx]).trim() : "";
+    const cgpaVal = cgpaIdx !== -1 && row[cgpaIdx] !== undefined && String(row[cgpaIdx]).trim() !== "" ? String(row[cgpaIdx]).trim() : "8.72 / 10.0";
+
+    parsedStudents.push({
+      reg: regVal,
+      name: nameVal,
+      batch: batchVal,
+      dept: deptVal,
+      att: attVal.includes('%') ? attVal : `${attVal}%`,
+      pin: pinVal,
+      address: addrVal,
+      cgpa: cgpaVal
+    });
+  }
+
+  return parsedStudents;
 }
 
-// Quiet background loader for students.xlsx with diagnostic error alerts
+// Background loader for students.xlsx
 async function loadStudentDataFromExcel() {
   try {
     let response = await fetch('students.xlsx');
     
-    // Check fallback filename if Windows saved it with double extension
     if (!response.ok && response.status === 404) {
-      console.warn("students.xlsx not found, checking students.xlsx.xlsx...");
       const altResponse = await fetch('students.xlsx.xlsx');
-      if (altResponse.ok) {
-        response = altResponse;
-      }
+      if (altResponse.ok) response = altResponse;
     }
 
     if (!response.ok) {
-      throw new Error(`File fetch failed! HTTP Status: ${response.status} (${response.statusText}).\nEnsure 'students.xlsx' is uploaded to the root of your repository.`);
+      throw new Error(`File fetch failed! HTTP Status: ${response.status} (${response.statusText}).`);
     }
 
     const arrayBuffer = await response.arrayBuffer();
@@ -101,15 +141,14 @@ async function loadStudentDataFromExcel() {
     const workbook = XLSX.read(arrayBuffer, { type: 'array' });
     const firstSheetName = workbook.SheetNames[0];
     const worksheet = workbook.Sheets[firstSheetName];
-    const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
-    STUDENTS_DB = parseRowsToStudents(rows);
+    STUDENTS_DB = parseExcelWorksheet(worksheet);
 
     if (STUDENTS_DB.length === 0) {
-      throw new Error("students.xlsx was found, but no student records could be parsed.\nCheck that your Excel file has row 1 headers like 'reg' or 'Roll No'.");
+      throw new Error("Found students.xlsx, but couldn't detect any student rows.\nMake sure at least one column has a header like 'Roll No', 'Reg No', or 'Register Number'.");
     }
 
-    console.log(`Loaded ${STUDENTS_DB.length} student records from Excel.`);
+    console.log(`Loaded ${STUDENTS_DB.length} student records from Excel:`, STUDENTS_DB);
   } catch (err) {
     console.error("students.xlsx load error:", err);
     alert(err.message);
@@ -304,18 +343,19 @@ function startFaceScan() {
   }, 250);
 }
 
-// Student Login matching against students.xlsx
+// Student Login matching against parsed dataset
 function handleLogin() {
   const enteredId = document.getElementById('loginId').value.trim();
   const enteredPin = document.getElementById('loginPass').value.trim();
 
   if (dedicatedRole === 'student') {
     if (STUDENTS_DB.length === 0) {
-      alert("Student database is not loaded.\nPlease make sure students.xlsx is uploaded and accessible.");
+      alert("Student database is empty.\nPlease make sure students.xlsx is uploaded and properly formatted.");
       return;
     }
 
-    const student = STUDENTS_DB.find(st => st.reg === enteredId && st.pin === enteredPin);
+    // Match Registration Number & PIN
+    const student = STUDENTS_DB.find(st => st.reg.toLowerCase() === enteredId.toLowerCase() && st.pin === enteredPin);
 
     if (student) {
       loggedInUser = student;
@@ -1009,9 +1049,7 @@ function renderStudentNotifications() {
         <div class="flex items-center justify-between">
           <span class="font-bold text-inherit text-xs">${n.title}</span>
           <span class="text-[9px] font-mono px-1.5 py-0.5 rounded font-bold ${
-            n.priority === 'Urgent' ? 'bg-rose-100 text-rose-800' :
-            n.priority === 'Important' ? 'bg-amber-100 text-amber-800' :
-            'bg-blue-100 text-blue-800'
+            n.priority === 'Urgent' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'
           }">${n.priority}</span>
         </div>
         <p class="text-[11px] text-slate-500 leading-snug">${n.body}</p>
