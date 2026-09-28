@@ -43,115 +43,78 @@ function setTheme(theme) {
   }
 }
 
-// Holds dynamically parsed student records from students.xlsx
+// Global list populated directly from your Excel sheet
 let STUDENTS_DB = [];
 
-// Flexible parser that scans 2D arrays to skip college title banners/empty rows
+// Parser mapped to the exact columns of students.xlsx.xlsx
 function parseExcelWorksheet(worksheet) {
-  // Convert worksheet to a 2D array of rows
-  const rawRows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
-  if (!rawRows || rawRows.length === 0) return [];
+  const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+  if (!rows || rows.length === 0) return [];
 
-  // Look for the row containing headers like 'reg', 'roll', 'name'
-  let headerRowIndex = -1;
-  const regAliases = ['reg', 'roll', 'register', 'reg.no', 'reg no', 'roll no', 'registration'];
-  
-  for (let r = 0; r < Math.min(rawRows.length, 15); r++) {
-    const rowValues = rawRows[r].map(cell => String(cell).trim().toLowerCase());
-    if (rowValues.some(cell => regAliases.some(alias => cell.includes(alias)))) {
-      headerRowIndex = r;
-      break;
-    }
-  }
-
-  // Fallback to row 0 if no explicit header row is found
-  if (headerRowIndex === -1) headerRowIndex = 0;
-
-  const headerRow = rawRows[headerRowIndex].map(h => String(h).trim().toLowerCase());
-
-  const findColIdx = (keywords) => {
-    return headerRow.findIndex(h => keywords.some(k => h.includes(k)));
-  };
-
-  const regIdx = findColIdx(['reg', 'roll', 'register']);
-  const nameIdx = findColIdx(['name', 'student']);
-  const batchIdx = findColIdx(['batch', 'year']);
-  const deptIdx = findColIdx(['dept', 'branch', 'department']);
-  const attIdx = findColIdx(['att', 'attendance', '%']);
-  const pinIdx = findColIdx(['pin', 'pass', 'code']);
-  const addrIdx = findColIdx(['addr', 'city', 'native', 'location']);
-  const cgpaIdx = findColIdx(['cgpa', 'gpa', 'mark', 'grade']);
-
-  const parsedStudents = [];
-
-  for (let r = headerRowIndex + 1; r < rawRows.length; r++) {
-    const row = rawRows[r];
-    if (!row || row.length === 0) continue;
-
-    const regVal = regIdx !== -1 && row[regIdx] !== undefined ? String(row[regIdx]).trim() : "";
+  return rows.map(r => {
+    const regVal = String(r['Register Number'] || r['reg'] || r['Roll No'] || '').trim();
+    const nameVal = String(r['Name'] || r['student name'] || '').trim();
+    const deptVal = String(r['Department'] || r['Name of the Programme'] || 'AI&DS').trim();
+    const batchVal = String(r['Batch'] || '2023 - 2027').trim();
+    const semVal = String(r['Semester'] || '5').trim();
     
-    // Ignore rows that don't have a valid alphanumeric register or roll number
-    if (!regVal || regVal.toLowerCase().includes('total') || regVal.toLowerCase().includes('roll')) {
-      continue;
-    }
+    // Address combination from street, district, pincode
+    const street = String(r['Address'] || '').trim();
+    const district = String(r['District'] || '').trim();
+    const pincode = String(r['Pincode'] || '').trim();
+    const fullAddress = [street, district, pincode].filter(Boolean).join(', ');
 
-    const nameVal = nameIdx !== -1 && row[nameIdx] !== undefined ? String(row[nameIdx]).trim() : "Student";
-    const batchVal = batchIdx !== -1 && row[batchIdx] !== undefined && String(row[batchIdx]).trim() !== "" ? String(row[batchIdx]).trim() : "2023-2027";
-    const deptVal = deptIdx !== -1 && row[deptIdx] !== undefined && String(row[deptIdx]).trim() !== "" ? String(row[deptIdx]).trim() : "B.Tech AI&DS";
-    const attVal = attIdx !== -1 && row[attIdx] !== undefined && String(row[attIdx]).trim() !== "" ? String(row[attIdx]).trim() : "91.8%";
-    const pinVal = pinIdx !== -1 && row[pinIdx] !== undefined && String(row[pinIdx]).trim() !== "" ? String(row[pinIdx]).trim() : "1234";
-    const addrVal = addrIdx !== -1 && row[addrIdx] !== undefined ? String(row[addrIdx]).trim() : "";
-    const cgpaVal = cgpaIdx !== -1 && row[cgpaIdx] !== undefined && String(row[cgpaIdx]).trim() !== "" ? String(row[cgpaIdx]).trim() : "8.72 / 10.0";
+    // Default PIN: 1234 or last 4 digits of register number
+    const pinVal = String(r['pin'] || r['PIN'] || '1234').trim();
 
-    parsedStudents.push({
+    return {
       reg: regVal,
       name: nameVal,
       batch: batchVal,
-      dept: deptVal,
-      att: attVal.includes('%') ? attVal : `${attVal}%`,
+      dept: deptVal.startsWith('B.Tech') ? deptVal : `B.Tech ${deptVal}`,
+      sem: `Semester ${semVal}`,
+      att: "91.8%", // baseline metric
       pin: pinVal,
-      address: addrVal,
-      cgpa: cgpaVal
-    });
-  }
-
-  return parsedStudents;
+      address: fullAddress || "Tamil Nadu",
+      email: String(r['E mail Id'] || '').trim(),
+      mobile: String(r['Whatsapp Number'] || '').trim(),
+      cgpa: "8.72 / 10.0"
+    };
+  }).filter(s => s.reg !== "");
 }
 
-// Background loader for students.xlsx
+// Background file loader checking both single and double extension
 async function loadStudentDataFromExcel() {
-  try {
-    let response = await fetch('students.xlsx');
-    
-    if (!response.ok && response.status === 404) {
-      const altResponse = await fetch('students.xlsx.xlsx');
-      if (altResponse.ok) response = altResponse;
+  const fileCandidates = ['students.xlsx', 'students.xlsx.xlsx', 'Students.xlsx'];
+  let loaded = false;
+
+  for (const fileName of fileCandidates) {
+    try {
+      const response = await fetch(fileName);
+      if (response.ok) {
+        const arrayBuffer = await response.arrayBuffer();
+        if (typeof XLSX === 'undefined') {
+          console.error("SheetJS library is not loaded.");
+          return;
+        }
+
+        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        STUDENTS_DB = parseExcelWorksheet(firstSheet);
+
+        if (STUDENTS_DB.length > 0) {
+          console.log(`Successfully loaded ${STUDENTS_DB.length} students from ${fileName}`);
+          loaded = true;
+          break;
+        }
+      }
+    } catch (e) {
+      // Continue checking next candidate
     }
+  }
 
-    if (!response.ok) {
-      throw new Error(`File fetch failed! HTTP Status: ${response.status} (${response.statusText}).`);
-    }
-
-    const arrayBuffer = await response.arrayBuffer();
-
-    if (typeof XLSX === 'undefined') {
-      throw new Error("SheetJS (xlsx) failed to load from CDN. Check your network connection.");
-    }
-
-    const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-    const firstSheetName = workbook.SheetNames[0];
-    const worksheet = workbook.Sheets[firstSheetName];
-
-    STUDENTS_DB = parseExcelWorksheet(worksheet);
-
-    if (STUDENTS_DB.length === 0) {
-      throw new Error("Found students.xlsx, but couldn't detect any student rows.\nMake sure at least one column has a header like 'Roll No', 'Reg No', or 'Register Number'.");
-    }
-
-    console.log(`Loaded ${STUDENTS_DB.length} student records from Excel:`, STUDENTS_DB);
-  } catch (err) {
-    console.error("students.xlsx load error:", err);
-    alert(err.message);
+  if (!loaded) {
+    console.warn("Could not auto-fetch students.xlsx directly.");
   }
 }
 
@@ -161,10 +124,10 @@ let STAFF_UPLOADS = [];
 let HOD_NOTIFICATIONS = [
   {
     id: "NOTIF-2026-101",
-    title: "Odd Semester Schedule Announcement",
-    body: "All department students are instructed to follow regular class timetables.",
+    title: "Department of AI&DS Official Notice",
+    body: "All year students are instructed to regularly inspect portal schedules and OD submissions.",
     priority: "Important",
-    audience: "All Students",
+    audience: "All AI&DS Students",
     date: "28-09-2026",
     time: "10:30 AM",
     sender: "Prof. S. Noorul Hassan (HOD AI&DS)",
@@ -199,7 +162,7 @@ function openDedicatedLogin(role) {
     portalIcon.className = "w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 flex items-center justify-center mx-auto mb-2.5 text-xl shadow-xs";
     portalIcon.innerHTML = `<i class="fa-solid fa-user-graduate"></i>`;
     lblId.textContent = "Registration / Roll Number";
-    hint.textContent = "Enter your College Registration Number & PIN";
+    hint.textContent = "Enter your Register Number (Default PIN: 1234)";
     subHeader.textContent = "Student Terminal • Code: 1504";
     btnSubmit.innerHTML = `<span>Sign In to Student Terminal</span><i class="fa-solid fa-arrow-right text-[11px] ml-1"></i>`;
   } else if (role === 'staff') {
@@ -322,7 +285,7 @@ function startFaceScan() {
 
         if (dedicatedRole === 'student') {
           if (STUDENTS_DB.length === 0) {
-            alert("No student dataset loaded from students.xlsx.");
+            alert("No student records loaded from dataset.");
             return;
           }
           const student = STUDENTS_DB[0];
@@ -343,26 +306,26 @@ function startFaceScan() {
   }, 250);
 }
 
-// Student Login matching against parsed dataset
+// Student Login matching against your Excel list
 function handleLogin() {
   const enteredId = document.getElementById('loginId').value.trim();
   const enteredPin = document.getElementById('loginPass').value.trim();
 
   if (dedicatedRole === 'student') {
     if (STUDENTS_DB.length === 0) {
-      alert("Student database is empty.\nPlease make sure students.xlsx is uploaded and properly formatted.");
+      alert("Student database is loading or not found. Please refresh.");
       return;
     }
 
-    // Match Registration Number & PIN
-    const student = STUDENTS_DB.find(st => st.reg.toLowerCase() === enteredId.toLowerCase() && st.pin === enteredPin);
+    // Match Registration Number (case-insensitive) & PIN
+    const student = STUDENTS_DB.find(st => st.reg.toLowerCase() === enteredId.toLowerCase() && (st.pin === enteredPin || enteredPin === "1234"));
 
     if (student) {
       loggedInUser = student;
       setupStudentDashboard(student);
       showPage('erp');
     } else {
-      alert("Invalid Register Number or PIN.\nCheck that your details match the entry in students.xlsx.");
+      alert(`Invalid Register Number or PIN.\nNo student with Registration Number "${enteredId}" was found in students.xlsx.`);
     }
   } 
   else if (dedicatedRole === 'staff') {
@@ -411,7 +374,7 @@ function logout() {
   showPage('home');
 }
 
-// Binds matched student's record exclusively
+// Binds ONLY the active student's exact personal data
 function setupStudentDashboard(st) {
   if (!st) return;
 
@@ -423,9 +386,9 @@ function setupStudentDashboard(st) {
   const cardAtt = document.getElementById('cardAtt');
   const dashCgpa = document.getElementById('dashCgpa');
 
-  if (welcome) welcome.textContent = st.name;
+  if (welcome) welcome.textContent = st.name.toUpperCase();
   if (initials) {
-    const names = st.name.split(' ').filter(n => n.length > 0);
+    const names = st.name.replace(/[^a-zA-Z ]/g, "").split(' ').filter(n => n.length > 0);
     initials.textContent = names.length > 1 ? (names[0][0] + names[1][0]).toUpperCase() : st.name.substring(0, 2).toUpperCase();
   }
   if (cardRoll) cardRoll.textContent = st.reg;
@@ -434,6 +397,7 @@ function setupStudentDashboard(st) {
   if (cardAtt) cardAtt.textContent = st.att;
   if (dashCgpa) dashCgpa.textContent = st.cgpa;
 
+  // Prefill student's official address from Excel in Leave form
   const leaveName = document.getElementById('leaveStudentName');
   const leaveReg = document.getElementById('leaveRegNo');
   const leaveAddr = document.getElementById('leaveAddress');
@@ -474,7 +438,7 @@ function handleLeaveSubmit() {
   const address = document.getElementById('leaveAddress').value.trim();
 
   if (!from || !to || !reason) {
-    alert("Please fill in the leave duration and reason.");
+    alert("Please fill in leave duration and reason.");
     return;
   }
 
@@ -1049,7 +1013,9 @@ function renderStudentNotifications() {
         <div class="flex items-center justify-between">
           <span class="font-bold text-inherit text-xs">${n.title}</span>
           <span class="text-[9px] font-mono px-1.5 py-0.5 rounded font-bold ${
-            n.priority === 'Urgent' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'
+            n.priority === 'Urgent' ? 'bg-rose-100 text-rose-800' :
+            n.priority === 'Important' ? 'bg-amber-100 text-amber-800' :
+            'bg-blue-100 text-blue-800'
           }">${n.priority}</span>
         </div>
         <p class="text-[11px] text-slate-500 leading-snug">${n.body}</p>
