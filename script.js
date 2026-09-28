@@ -48,33 +48,71 @@ let STUDENTS_DB = [];
 
 // Flexible parser for Excel header rows
 function parseRowsToStudents(rows) {
-  return rows.map(r => ({
-    reg: String(r.reg || r.Reg || r.REG || r["Roll No"] || r["Roll Number"] || r["Register No"] || r["Reg No"] || "").trim(),
-    name: String(r.name || r.Name || r.NAME || r["Student Name"] || "").trim(),
-    batch: String(r.batch || r.Batch || "2023-2027").trim(),
-    dept: String(r.dept || r.Dept || "B.Tech AI&DS").trim(),
-    att: String(r.att || r.Attendance || r.ATT || "0%").trim(),
-    pin: String(r.pin || r.PIN || r.Pin || "1234").trim(),
-    address: String(r.address || r.Address || "").trim(),
-    cgpa: String(r.cgpa || r.CGPA || "N/A").trim()
-  })).filter(s => s.reg !== "");
+  return rows.map(r => {
+    // Collect all keys in case-insensitive fashion
+    const keys = Object.keys(r);
+    const getVal = (aliases) => {
+      for (const alias of aliases) {
+        const found = keys.find(k => k.trim().toLowerCase() === alias.toLowerCase());
+        if (found && r[found] !== undefined && r[found] !== null && String(r[found]).trim() !== "") {
+          return String(r[found]).trim();
+        }
+      }
+      return "";
+    };
+
+    return {
+      reg: getVal(['reg', 'roll no', 'roll number', 'register no', 'reg no', 'registration no', 'reg.no', 'roll_no']),
+      name: getVal(['name', 'student name', 'student_name', 'candidate name']),
+      batch: getVal(['batch', 'academic year']) || "2023-2027",
+      dept: getVal(['dept', 'department', 'branch']) || "B.Tech AI&DS",
+      att: getVal(['att', 'attendance', 'attendance %', 'percentage']) || "90.0%",
+      pin: getVal(['pin', 'password', 'passcode']) || "1234",
+      address: getVal(['address', 'native', 'location', 'city']) || "",
+      cgpa: getVal(['cgpa', 'gpa', 'grade point']) || "8.50"
+    };
+  }).filter(s => s.reg !== "");
 }
 
-// Quiet background loader for students.xlsx
+// Quiet background loader for students.xlsx with diagnostic error alerts
 async function loadStudentDataFromExcel() {
   try {
-    const response = await fetch('students.xlsx');
-    if (!response.ok) throw new Error("Could not find students.xlsx");
+    let response = await fetch('students.xlsx');
+    
+    // Check fallback filename if Windows saved it with double extension
+    if (!response.ok && response.status === 404) {
+      console.warn("students.xlsx not found, checking students.xlsx.xlsx...");
+      const altResponse = await fetch('students.xlsx.xlsx');
+      if (altResponse.ok) {
+        response = altResponse;
+      }
+    }
+
+    if (!response.ok) {
+      throw new Error(`File fetch failed! HTTP Status: ${response.status} (${response.statusText}).\nEnsure 'students.xlsx' is uploaded to the root of your repository.`);
+    }
 
     const arrayBuffer = await response.arrayBuffer();
+
+    if (typeof XLSX === 'undefined') {
+      throw new Error("SheetJS (xlsx) failed to load from CDN. Check your network connection.");
+    }
+
     const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-    const rows = XLSX.utils.sheet_to_json(firstSheet, { defval: "" });
+    const firstSheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[firstSheetName];
+    const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
     STUDENTS_DB = parseRowsToStudents(rows);
-    console.log(`Loaded ${STUDENTS_DB.length} student records from students.xlsx.`);
+
+    if (STUDENTS_DB.length === 0) {
+      throw new Error("students.xlsx was found, but no student records could be parsed.\nCheck that your Excel file has row 1 headers like 'reg' or 'Roll No'.");
+    }
+
+    console.log(`Loaded ${STUDENTS_DB.length} student records from Excel.`);
   } catch (err) {
-    console.warn("students.xlsx background load note:", err.message);
+    console.error("students.xlsx load error:", err);
+    alert(err.message);
   }
 }
 
@@ -273,7 +311,7 @@ function handleLogin() {
 
   if (dedicatedRole === 'student') {
     if (STUDENTS_DB.length === 0) {
-      alert("Student database is not loaded. Please make sure students.xlsx is present in the project directory.");
+      alert("Student database is not loaded.\nPlease make sure students.xlsx is uploaded and accessible.");
       return;
     }
 
@@ -971,7 +1009,9 @@ function renderStudentNotifications() {
         <div class="flex items-center justify-between">
           <span class="font-bold text-inherit text-xs">${n.title}</span>
           <span class="text-[9px] font-mono px-1.5 py-0.5 rounded font-bold ${
-            n.priority === 'Urgent' ? 'bg-rose-100 text-rose-800' : 'bg-blue-100 text-blue-800'
+            n.priority === 'Urgent' ? 'bg-rose-100 text-rose-800' :
+            n.priority === 'Important' ? 'bg-amber-100 text-amber-800' :
+            'bg-blue-100 text-blue-800'
           }">${n.priority}</span>
         </div>
         <p class="text-[11px] text-slate-500 leading-snug">${n.body}</p>
