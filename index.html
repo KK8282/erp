@@ -6,7 +6,7 @@
   <title>Arunai Engineering College (Autonomous) - ERP Portal</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <!-- SheetJS CDN to parse Excel (.xlsx) spreadsheets -->
+  <!-- SheetJS to read Excel files directly in browser -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -177,6 +177,17 @@
           <p id="loginPortalDesc" class="text-xs text-slate-500 mt-1 font-mono">Department of Artificial Intelligence & Data Science</p>
         </div>
 
+        <!-- Automatic Local File Fallback (Only shows if running through file:// and auto-fetch is blocked) -->
+        <div id="offlineFileBanner" class="hidden mb-4 p-2.5 rounded-xl border border-amber-300 bg-amber-50 dark:bg-amber-950/40 text-xs">
+          <p class="font-bold text-amber-900 dark:text-amber-300 flex items-center">
+            <i class="fa-solid fa-triangle-exclamation mr-1.5"></i>Offline Browser Mode
+          </p>
+          <p class="text-[10px] text-amber-800 dark:text-amber-400 mt-0.5 mb-2">
+            Browsers block automatic Excel reading when double-clicking HTML files. Choose your Excel file once:
+          </p>
+          <input type="file" id="localExcelPicker" accept=".xlsx, .xls" class="w-full text-[11px] text-slate-600 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-[10px] file:font-semibold file:bg-blue-900 file:text-white cursor-pointer" />
+        </div>
+
         <div class="flex items-center justify-between border-b pb-3 mb-4 text-xs" style="border-color: var(--border-main);">
           <span class="font-medium text-slate-500">Authentication</span>
           <div class="flex space-x-1 font-mono text-[11px]">
@@ -189,13 +200,12 @@
           </div>
         </div>
 
-        <!-- Clean Sign-in Form without File Picker Box -->
         <div id="credsForm" class="space-y-4 text-xs">
           <div>
             <label id="lblLoginId" class="block font-semibold text-slate-500 mb-1">Registration / Roll Number</label>
             <div class="relative">
               <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-id-card"></i></span>
-              <input type="text" id="loginId" placeholder="Enter Registration Number" class="w-full border rounded-lg pl-9 pr-3 py-2.5 font-mono outline-none text-xs sm:text-sm" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
+              <input type="text" id="loginId" placeholder="Enter Register Number" class="w-full border rounded-lg pl-9 pr-3 py-2.5 font-mono outline-none text-xs sm:text-sm" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
             </div>
           </div>
 
@@ -203,7 +213,7 @@
             <label class="block font-semibold text-slate-500 mb-1">Security Passcode / PIN</label>
             <div class="relative">
               <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-lock"></i></span>
-              <input type="password" id="loginPass" placeholder="Enter PIN" class="w-full border rounded-lg pl-9 pr-9 py-2.5 font-mono outline-none text-xs sm:text-sm" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
+              <input type="password" id="loginPass" placeholder="Enter PIN (Default: 1234)" class="w-full border rounded-lg pl-9 pr-9 py-2.5 font-mono outline-none text-xs sm:text-sm" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
               <button type="button" onclick="togglePassEye()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
                 <i id="passEyeIcon" class="fa-regular fa-eye"></i>
               </button>
@@ -299,7 +309,6 @@
           <span class="hidden sm:inline">Home</span>
         </button>
 
-        <!-- Notification Bell Container -->
         <div class="relative">
           <button onclick="toggleNotificationDropdown()" class="relative p-2 rounded-lg theme-card-subtle text-inherit hover:text-blue-600 transition cursor-pointer">
             <i class="fa-solid fa-bell text-xs sm:text-sm"></i>
@@ -433,8 +442,8 @@
             </div>
             <div class="theme-card p-3.5 sm:p-4 rounded-xl">
               <span class="text-[10px] sm:text-[11px] font-mono uppercase text-slate-500 block">Current Term</span>
-              <span class="text-base sm:text-lg font-bold text-inherit font-mono mt-1 block">Semester VII</span>
-              <span class="text-[9px] sm:text-[10px] text-slate-400 mt-1 sm:mt-2 block">Year: IV • Hall C14</span>
+              <span class="text-base sm:text-lg font-bold text-inherit font-mono mt-1 block" id="cardTerm">Semester 5</span>
+              <span class="text-[9px] sm:text-[10px] text-slate-400 mt-1 sm:mt-2 block" id="cardBatchDisplay">2023 - 2027 • Hall C14</span>
             </div>
             <div class="theme-card p-3.5 sm:p-4 rounded-xl">
               <span class="text-[10px] sm:text-[11px] font-mono uppercase text-slate-500 block">Pending OD Requests</span>
@@ -446,8 +455,8 @@
                 <span class="text-[10px] sm:text-[11px] font-mono uppercase text-slate-500">Attendance</span>
                 <span class="px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-bold bg-emerald-100 text-emerald-800">Eligible</span>
               </div>
-              <span class="text-xl sm:text-2xl font-bold text-emerald-600 font-mono mt-1 block" id="cardAtt">--</span>
-              <span class="text-[9px] sm:text-[10px] text-slate-400 mt-1 sm:mt-2 block">Tracked Periods</span>
+              <span class="text-xl sm:text-2xl font-bold text-emerald-600 font-mono mt-1 block" id="cardAtt">91.8%</span>
+              <span class="text-[9px] sm:text-[10px] text-slate-400 mt-1 sm:mt-2 block">349 / 380 Periods</span>
             </div>
           </div>
         </div>
