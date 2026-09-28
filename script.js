@@ -43,72 +43,123 @@ function setTheme(theme) {
   }
 }
 
-// ========================================================
-// EMBEDDED COMPLETE DATASET (All 61 Students from students.xlsx)
-// ========================================================
-let STUDENTS_DB = [
-  {"reg": "510423243001", "name": "Abdul Rahuman . S", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "48/1,  Ramalinganar main road, Tiruvannamalai, 606601", "email": "abdulrahuman.ar2417@gmail.com", "mobile": "6381941350", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243002", "name": "Abinaya . G", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "2/24, Pallathur(Vill), Dharimapuri, 635303", "email": "abiguna846@gmail.com", "mobile": "8838906981", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243003", "name": "Abinaya . V", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "196, Kendiyan street, Tiruvannamalai, 606753", "email": "abivenkat2611@gmail.com", "mobile": "9789082286", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243004", "name": "Agalya . E", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Mettu street, Tiruvannamalai, 606803", "email": "agalyae28@gmail.com", "mobile": "9787127118", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243005", "name": "Ajay  . K", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "26, Sornapuri, Kallakurichi, 606213", "email": "k.ajay200612@gmail.com", "mobile": "9361719572", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243006", "name": "Ajay . K", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Pillaiyar kovil street, Tiruvannamalai, 606753", "email": "ajaykumar19379@gmail.com", "mobile": "6385750058", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243007", "name": "Akash . R", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Kamarajar nagar, Tiruvannamalai, 606907", "email": "akashmicky137@gmail.com", "mobile": "9342410313", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243008", "name": "Ananya . S", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Bazaar street, Tiruvannamalai, 606755", "email": "ananyasivakumar07@gmail.com", "mobile": "7871675716", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243009", "name": "Aravindh . D", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Mottaiyan street, Tiruvannamalai, 606708", "email": "aravindh05072005@gmail.com", "mobile": "9025983796", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243010", "name": "Archana . R", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "528, Perumal kovil street, Tiruvannamalai, 606806", "email": "archanaramesh342@gmail.com", "mobile": "8122396113", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243011", "name": "Ashok . V", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "3/293, Mettu street, Cuddalore, 606110", "email": "ashokkumarv1974@gmail.com", "mobile": "9025708945", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243012", "name": "Balaji . J", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "NO 119/A  baskar street, Tiruvannamalai, 606601", "email": "balajibalaji97902@gmail.com", "mobile": "7092923793", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243013", "name": "Balamurugan . V", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "332, Pillaiyar Kovil St, Tiruvannamalai, 606752", "email": "bala08052006@gmail.com", "mobile": "9361730075", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243014", "name": "Bharathiraja . J", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "26, Ramadoss st, Tiruvannamalai, 606601", "email": "bharathiraja2006j@gmail.com", "mobile": "9944645228", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243015", "name": "Bhuvaneshwari . A", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "810/3, Madhakoil street, Tiruvannamalai, 606708", "email": "arumbhuvaneshwari@gmail.com", "mobile": "9080782756", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243016", "name": "Deena . R", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Mariyamman kovil st, Tiruvannamalai, 606707", "email": "rdeena0502@gmail.com", "mobile": "9629167383", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243017", "name": "Deepan . S", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Perumal kovil street, Tiruvannamalai, 606708", "email": "deepandeepans680@gmail.com", "mobile": "9597284617", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243018", "name": "Dhanasri . E", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "40,  Mariyamman koil street, Tiruvannamalai, 606808", "email": "dhanasriedu@gmail.com", "mobile": "8072120042", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243019", "name": "Dhanushkodi . S", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "33/A, Muthu Mariamman Koil St, Chengalpattu, 603102", "email": "dhanushkodis75@gmail.com", "mobile": "8122394017", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243020", "name": "Gokul . V", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "15, 3rd street, Periyar nagar, Tiruvannamalai, 606601", "email": "gokul24102005@gmail.com", "mobile": "9025700756", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243021", "name": "Hariharan . V", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "620, School street, Tiruvannamalai, 606806", "email": "vhariharan283@gmail.com", "mobile": "8903503254", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243022", "name": "Jaiganesh . C", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "37/B, Ponniamman kovil street, Tiruvannamalai, 606601", "email": "jaiganeshjaiganesh756@gmail.com", "mobile": "9025983804", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243023", "name": "Janani . M", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "697, Main road, Tiruvannamalai, 606808", "email": "jananimuthu0509@gmail.com", "mobile": "9047915998", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243024", "name": "Jeeva . S", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "90,  Mariyamman Kovil Street, Tiruvannamalai, 606708", "email": "jeeva2006124@gmail.com", "mobile": "7094038165", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243025", "name": "Keerthika . P", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "57, Anna Nagar, Tiruvannamalai, 606804", "email": "keerthika0607@gmail.com", "mobile": "6374989647", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243026", "name": "Krishna Kumar .S", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "NO.3 Neelambari Street, Vallar Nagar, Villupuram, 605602", "email": "krishnakumar.sk1205@gmail.com", "mobile": "8667683935", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243027", "name": "Madhusudhanan . P", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "567, Murugan kovil street, Tiruvannamalai, 606708", "email": "madhusudhanan0143@gmail.com", "mobile": "8122421376", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243028", "name": "Magesh . S", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "100/1,  School street, Tiruvannamalai, 606701", "email": "mageshskmageshsk9629@gmail.com", "mobile": "9629166825", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243029", "name": "Mani . G", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "156, Anna nagar, Tiruvannamalai, 606752", "email": "manikandan050306@gmail.com", "mobile": "7810874026", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243030", "name": "Manigandan . M", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Kamarajar nagar, Tiruvannamalai, 606907", "email": "manimurugan992@gmail.com", "mobile": "9360814674", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243031", "name": "Manikandan . M", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Mariyamman kovil street, Tiruvannamalai, 606708", "email": "manimani638062@gmail.com", "mobile": "6380628741", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243032", "name": "Mohamed Irfan . S", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "No.145, Main road, Mathalangulam, Tiruvannamalai, 606601", "email": "irfan040406@gmail.com", "mobile": "8124960309", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243033", "name": "Mohamed Shajahan . N", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "33, Ramadoss Street, Tiruvannamalai, 606601", "email": "shajahanshajahan607@gmail.com", "mobile": "9994645229", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243034", "name": "Monisha . P", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "53, Road street, Tiruvannamalai, 606803", "email": "monishap8438@gmail.com", "mobile": "9342410314", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243035", "name": "Mugunthan . M", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "89, Eswaran kovil street, Tiruvannamalai, 606708", "email": "mugunthanm89@gmail.com", "mobile": "7871675717", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243036", "name": "Naveen . A", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Mariyamman kovil st, Tiruvannamalai, 606707", "email": "naveena90@gmail.com", "mobile": "9025983797", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243037", "name": "Naveen . R", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "45, North street, Tiruvannamalai, 606601", "email": "naveenr12@gmail.com", "mobile": "8122396114", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243038", "name": "Naveenkumar . S", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "22, School road, Tiruvannamalai, 606806", "email": "naveenkumars07@gmail.com", "mobile": "9025708946", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243039", "name": "Nithya . M", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "33, Main road, Tiruvannamalai, 606752", "email": "nithyam2006@gmail.com", "mobile": "7092923794", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243040", "name": "Pavithra . K", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Pillaiyar kovil street, Tiruvannamalai, 606753", "email": "pavithrak26@gmail.com", "mobile": "9361730076", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243041", "name": "Pooja . S", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "NO 12, Gandhi street, Tiruvannamalai, 606601", "email": "poojasivakumar05@gmail.com", "mobile": "9944645230", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243042", "name": "Prasanth . R", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "40/1, Bazaar street, Tiruvannamalai, 606755", "email": "prasanthr02@gmail.com", "mobile": "9080782757", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243043", "name": "Praveen . A", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Mottaiyan street, Tiruvannamalai, 606708", "email": "praveena2006@gmail.com", "mobile": "9629167384", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243044", "name": "Praveenkumar . K", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "52, School street, Tiruvannamalai, 606806", "email": "praveenkumark23@gmail.com", "mobile": "9597284618", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243045", "name": "Premkumar . M", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Mettu street, Cuddalore, 606110", "email": "premkumarm08@gmail.com", "mobile": "8072120043", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243046", "name": "Priyadharshini . S", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Baskar street, Tiruvannamalai, 606601", "email": "priyadharshinis09@gmail.com", "mobile": "8122394018", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243047", "name": "Rahul . G", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Pillaiyar Kovil St, Tiruvannamalai, 606752", "email": "rahulg2006@gmail.com", "mobile": "9025700757", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243048", "name": "Rajarajan . T", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Ramadoss st, Tiruvannamalai, 606601", "email": "rajarajant01@gmail.com", "mobile": "8903503255", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243049", "name": "Rithika . V", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Madhakoil street, Tiruvannamalai, 606708", "email": "rithikav2006@gmail.com", "mobile": "9025983805", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243050", "name": "Sandhiya . M", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Mariyamman kovil st, Tiruvannamalai, 606707", "email": "sandhiyam04@gmail.com", "mobile": "9047915999", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243051", "name": "Sanjay . K", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Perumal kovil street, Tiruvannamalai, 606708", "email": "sanjayk2006@gmail.com", "mobile": "7094038166", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243052", "name": "Saravanan . P", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Mariyamman koil street, Tiruvannamalai, 606808", "email": "saravananp11@gmail.com", "mobile": "6374989648", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243053", "name": "Sathish . S", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Muthu Mariamman Koil St, Chengalpattu, 603102", "email": "sathishs2006@gmail.com", "mobile": "8122421377", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243054", "name": "Shalini . A", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Periyar nagar, Tiruvannamalai, 606601", "email": "shalinia03@gmail.com", "mobile": "9629166826", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243055", "name": "Sneha . R", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "School street, Tiruvannamalai, 606806", "email": "snehar2006@gmail.com", "mobile": "7810874027", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243056", "name": "Surya . M", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Ponniamman kovil street, Tiruvannamalai, 606601", "email": "suryam2006@gmail.com", "mobile": "9360814675", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243057", "name": "Swetha . D", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Main road, Tiruvannamalai, 606808", "email": "swethad05@gmail.com", "mobile": "6380628742", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243058", "name": "Tamilarasan . K", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Mariyamman Kovil Street, Tiruvannamalai, 606708", "email": "tamilarasank2006@gmail.com", "mobile": "8124960310", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243059", "name": "Tharun . S", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Anna Nagar, Tiruvannamalai, 606804", "email": "tharuns2006@gmail.com", "mobile": "9994645231", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243060", "name": "Yuvaraj . G", "batch": "2023 - 2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "Murugan kovil street, Tiruvannamalai, 606708", "email": "yuvarajg2006@gmail.com", "mobile": "9342410315", "cgpa": "8.72 / 10.0"},
-  {"reg": "510423243301", "name": "Arun .R", "batch": "2023-2027", "dept": "B.Tech AI&DS", "sem": "Semester 5", "att": "91.8%", "pin": "1234", "address": "252/3, Lakshmi Nagar, Nallavanpalayam, Tiruvannamalai, 606603", "email": "arunarundx1@gmail.com", "mobile": "6385707118", "cgpa": "8.72 / 10.0"}
-];
+// Global list populated directly from your Excel file
+let STUDENTS_DB = [];
+
+// Parse worksheet based on your exact Excel file columns
+function parseExcelWorksheet(worksheet) {
+  const rows = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
+  if (!rows || rows.length === 0) return [];
+
+  return rows.map(r => {
+    // Exact column headers from your file
+    const regVal = String(r['Register Number'] || r['reg'] || r['Roll No'] || '').trim();
+    const nameVal = String(r['Name'] || r['student name'] || '').trim();
+    const deptVal = String(r['Department'] || r['Name of the Programme'] || 'AI&DS').trim();
+    const batchVal = String(r['Batch'] || '2023 - 2027').trim();
+    const semVal = String(r['Semester'] || '5').trim();
+
+    const street = String(r['Address'] || '').trim();
+    const district = String(r['District'] || '').trim();
+    const pincode = String(r['Pincode'] || '').replace('.0', '').trim();
+    const fullAddress = [street, district, pincode].filter(Boolean).join(', ');
+
+    // Use PIN column if present, otherwise default to 1234
+    const pinVal = String(r['PIN'] || r['pin'] || '1234').trim();
+
+    return {
+      reg: regVal,
+      name: nameVal,
+      batch: batchVal,
+      dept: deptVal.startsWith('B.Tech') ? deptVal : `B.Tech ${deptVal}`,
+      sem: `Semester ${semVal}`,
+      att: "91.8%",
+      pin: pinVal,
+      address: fullAddress || "Tamil Nadu",
+      email: String(r['E mail Id'] || '').trim(),
+      mobile: String(r['Whatsapp Number'] || '').replace('.0', '').trim(),
+      cgpa: "8.72 / 10.0"
+    };
+  }).filter(s => s.reg !== "");
+}
+
+// Background Excel file loader
+async function loadStudentDataFromExcel() {
+  const isLocalFileProtocol = window.location.protocol === 'file:';
+  const offlineBanner = document.getElementById('offlineFileBanner');
+
+  // If running locally via file:///, browsers block fetch() due to CORS
+  if (isLocalFileProtocol) {
+    if (offlineBanner) offlineBanner.classList.remove('hidden');
+    console.warn("Running via file:/// protocol. Browser security blocks fetch(). Please select students.xlsx in the prompt.");
+    return;
+  }
+
+  // If running via HTTP/HTTPS (GitHub Pages or Live Server), fetch directly
+  const fileCandidates = ['students.xlsx', 'students.xlsx.xlsx', 'Students.xlsx'];
+  let loaded = false;
+
+  for (const fileName of fileCandidates) {
+    try {
+      const response = await fetch(fileName);
+      if (response.ok) {
+        const arrayBuffer = await response.arrayBuffer();
+        if (typeof XLSX === 'undefined') {
+          console.error("SheetJS library is not loaded.");
+          return;
+        }
+
+        const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        STUDENTS_DB = parseExcelWorksheet(firstSheet);
+
+        if (STUDENTS_DB.length > 0) {
+          console.log(`Successfully parsed ${STUDENTS_DB.length} students from ${fileName}`);
+          loaded = true;
+          break;
+        }
+      }
+    } catch (e) {
+      // Continue to next filename candidate
+    }
+  }
+
+  if (!loaded) {
+    console.warn("Could not auto-fetch students.xlsx over HTTP.");
+    if (offlineBanner) offlineBanner.classList.remove('hidden');
+  }
+}
+
+// Local manual file picker listener for file:/// mode
+function initLocalFilePicker() {
+  const filePicker = document.getElementById('localExcelPicker');
+  const offlineBanner = document.getElementById('offlineFileBanner');
+
+  if (filePicker) {
+    filePicker.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const data = new Uint8Array(event.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+          STUDENTS_DB = parseExcelWorksheet(firstSheet);
+
+          if (STUDENTS_DB.length > 0) {
+            alert(`Loaded ${STUDENTS_DB.length} students from ${file.name}!`);
+            if (offlineBanner) offlineBanner.classList.add('hidden');
+          }
+        } catch (err) {
+          alert("Error parsing the selected Excel file.");
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    });
+  }
+}
 
 let OD_APPLICATIONS = [];
 let LEAVE_APPLICATIONS = [];
@@ -276,6 +327,10 @@ function startFaceScan() {
         prog.style.width = '0%';
 
         if (dedicatedRole === 'student') {
+          if (STUDENTS_DB.length === 0) {
+            alert("No student records loaded from Excel.");
+            return;
+          }
           const student = STUDENTS_DB.find(s => s.reg === "510423243026") || STUDENTS_DB[0];
           loggedInUser = student;
           setupStudentDashboard(student);
@@ -294,12 +349,17 @@ function startFaceScan() {
   }, 250);
 }
 
-// Student Login matching against your 61 student records
+// Student Login matching against your Excel list
 function handleLogin() {
   const enteredId = document.getElementById('loginId').value.trim();
   const enteredPin = document.getElementById('loginPass').value.trim();
 
   if (dedicatedRole === 'student') {
+    if (STUDENTS_DB.length === 0) {
+      alert("Student database is not loaded yet. If opening locally, choose students.xlsx in the prompt above.");
+      return;
+    }
+
     // Match Register Number (case-insensitive) & PIN
     const student = STUDENTS_DB.find(st => st.reg.toLowerCase() === enteredId.toLowerCase() && (st.pin === enteredPin || enteredPin === "1234"));
 
@@ -308,7 +368,7 @@ function handleLogin() {
       setupStudentDashboard(student);
       showPage('erp');
     } else {
-      alert(`Invalid Register Number or PIN.\nNo student with Registration Number "${enteredId}" was found in database.`);
+      alert(`Invalid Register Number or PIN.\nNo student with Registration Number "${enteredId}" was found in students.xlsx.`);
     }
   } 
   else if (dedicatedRole === 'staff') {
@@ -357,7 +417,7 @@ function logout() {
   showPage('home');
 }
 
-// Binds ONLY the active student's exact personal data
+// Binds matched student's record directly from Excel
 function setupStudentDashboard(st) {
   if (!st) return;
 
@@ -366,6 +426,8 @@ function setupStudentDashboard(st) {
   const cardRoll = document.getElementById('cardRollNo');
   const metricRoll = document.getElementById('metricRoll');
   const cardDept = document.getElementById('cardDept');
+  const cardTerm = document.getElementById('cardTerm');
+  const cardBatch = document.getElementById('cardBatchDisplay');
   const cardAtt = document.getElementById('cardAtt');
   const dashCgpa = document.getElementById('dashCgpa');
 
@@ -377,6 +439,8 @@ function setupStudentDashboard(st) {
   if (cardRoll) cardRoll.textContent = st.reg;
   if (metricRoll) metricRoll.textContent = st.reg;
   if (cardDept) cardDept.textContent = st.dept;
+  if (cardTerm) cardTerm.textContent = st.sem;
+  if (cardBatch) cardBatch.textContent = `${st.batch} • Hall C14`;
   if (cardAtt) cardAtt.textContent = st.att;
   if (dashCgpa) dashCgpa.textContent = st.cgpa;
 
@@ -1051,8 +1115,10 @@ function setMapRoute(dest) {
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   const savedTheme = localStorage.getItem('aec_theme') || 'light';
   setTheme(savedTheme);
+  initLocalFilePicker();
+  await loadStudentDataFromExcel();
   showPage('home');
 });
