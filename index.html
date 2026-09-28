@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+  <title>Arunai Engineering College (Autonomous) - ERP Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- SheetJS CDN to parse Excel (.xlsx) spreadsheets -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+  <!-- ========================================================
+       PAGE 0: HOME PAGE (3 GATEWAYS: STUDENT, STAFF, HOD)
+       ======================================================== -->
+  <section id="page-home" class="page-view min-h-screen flex flex-col relative campus-bg text-white overflow-hidden">
+    <header class="w-full z-40 bg-black/85 backdrop-blur-md border-b border-white/10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2.5 flex items-center justify-between text-[11px] font-medium tracking-wide">
+        <div class="flex items-center space-x-2.5 sm:space-x-3 cursor-pointer" onclick="showPage('home')">
+          <div class="leading-none">
+            <span class="text-base sm:text-lg font-extrabold tracking-wider font-sans block text-white">ARUNAI</span>
+            <span class="text-[9px] sm:text-[10px] uppercase tracking-widest text-slate-300 block font-semibold">Engineering College</span>
+            <span class="text-[8px] uppercase tracking-wider text-slate-400 block">(Autonomous)</span>
+          </div>
+        </div>
+
+        <div class="hidden lg:flex items-center space-x-6 uppercase font-mono text-[11px] text-slate-300">
+          <a href="#home" class="hover:text-white">UGC</a>
+          <a href="#home" class="hover:text-white">NISP</a>
+          <a href="#home" class="hover:text-white">IIC</a>
+          <a href="#home" class="hover:text-white">NIRF</a>
+          <a href="#home" class="hover:text-white">IQAC</a>
+          <a href="#home" class="hover:text-white">Gallery</a>
+          <a href="#home" class="hover:text-white">Contact</a>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button class="bg-[#f97316] hover:bg-[#ea580c] text-white px-3 sm:px-4 py-1.5 rounded text-[11px] sm:text-xs font-bold tracking-wide shadow-md transition transform active:scale-95 cursor-pointer">
+            Counselling code :1504
+          </button>
+          <button onclick="toggleMobileHomeMenu()" class="lg:hidden p-1.5 rounded border border-white/20 text-white">
+            <i class="fa-solid fa-bars text-sm"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="relative flex-1 flex flex-col items-center justify-center min-h-[560px] py-10 px-4">
+      <div class="relative z-20 text-center max-w-5xl mx-auto space-y-6">
+        <div class="space-y-2">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-black/60 border border-white/20 backdrop-blur-md text-[11px] font-mono tracking-wider text-amber-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+            <span>AUTONOMOUS INSTITUTION • DNV ISO 9001</span>
+          </div>
+
+          <h1 class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-serif-brand font-bold tracking-widest text-white drop-shadow-[0_10px_25px_rgba(0,0,0,0.95)] select-none">
+            ARUNAI
+          </h1>
+
+          <p class="text-xs sm:text-sm md:text-base font-mono text-slate-200 uppercase tracking-widest drop-shadow-md max-w-2xl mx-auto">
+            Integrated Campus Cloud ERP • Student & Staff Workspaces
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto pt-4 text-left font-sans">
+          <!-- Student Login -->
+          <div onclick="openDedicatedLogin('student')" class="group p-5 rounded-2xl bg-black/60 hover:bg-blue-950/80 backdrop-blur-md border border-white/20 hover:border-blue-500/80 shadow-2xl transition duration-300 cursor-pointer flex flex-col justify-between transform hover:-translate-y-1">
+            <div class="space-y-2">
+              <div class="w-11 h-11 rounded-xl bg-blue-600 group-hover:bg-blue-500 text-white flex items-center justify-center text-lg shadow-md transition">
+                <i class="fa-solid fa-graduation-cap"></i>
+              </div>
+              <h2 class="text-base font-bold text-white group-hover:text-blue-300 transition">Student Login</h2>
+              <p class="text-xs text-slate-300 leading-relaxed font-mono">
+                Access your personalized terminal, submit leave & OD, and check academic status.
+              </p>
+            </div>
+            <div class="pt-4 mt-2 border-t border-white/10 flex items-center justify-between text-xs font-mono text-blue-400 group-hover:text-blue-300 font-bold">
+              <span>Student Terminal</span>
+              <i class="fa-solid fa-arrow-right text-[11px] group-hover:translate-x-1 transition"></i>
+            </div>
+          </div>
+
+          <!-- Faculty Desk -->
+          <div onclick="openDedicatedLogin('staff')" class="group p-5 rounded-2xl bg-black/60 hover:bg-slate-900/90 backdrop-blur-md border border-white/20 hover:border-indigo-500/80 shadow-2xl transition duration-300 cursor-pointer flex flex-col justify-between transform hover:-translate-y-1">
+            <div class="space-y-2">
+              <div class="w-11 h-11 rounded-xl bg-indigo-600 group-hover:bg-indigo-500 text-white flex items-center justify-center text-lg shadow-md transition">
+                <i class="fa-solid fa-chalkboard-user"></i>
+              </div>
+              <h2 class="text-base font-bold text-white group-hover:text-indigo-300 transition">Faculty / Counsellor Desk</h2>
+              <p class="text-xs text-slate-300 leading-relaxed font-mono">
+                Counsellor approval desk and department file repository upload slot.
+              </p>
+            </div>
+            <div class="pt-4 mt-2 border-t border-white/10 flex items-center justify-between text-xs font-mono text-indigo-400 group-hover:text-indigo-300 font-bold">
+              <span>Counsellor Portal</span>
+              <i class="fa-solid fa-arrow-right text-[11px] group-hover:translate-x-1 transition"></i>
+            </div>
+          </div>
+
+          <!-- HOD Desk -->
+          <div onclick="openDedicatedLogin('hod')" class="group p-5 rounded-2xl bg-black/60 hover:bg-slate-900/90 backdrop-blur-md border border-white/20 hover:border-amber-500/80 shadow-2xl transition duration-300 cursor-pointer flex flex-col justify-between transform hover:-translate-y-1">
+            <div class="space-y-2">
+              <div class="w-11 h-11 rounded-xl bg-amber-600 group-hover:bg-amber-500 text-white flex items-center justify-center text-lg shadow-md transition">
+                <i class="fa-solid fa-building-columns"></i>
+              </div>
+              <h2 class="text-base font-bold text-white group-hover:text-amber-300 transition">HOD Executive Office</h2>
+              <p class="text-xs text-slate-300 leading-relaxed font-mono">
+                Final tier sanction desk and official student announcement broadcast box.
+              </p>
+            </div>
+            <div class="pt-4 mt-2 border-t border-white/10 flex items-center justify-between text-xs font-mono text-amber-400 group-hover:text-amber-300 font-bold">
+              <span>Executive Portal</span>
+              <i class="fa-solid fa-arrow-right text-[11px] group-hover:translate-x-1 transition"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="absolute bottom-0 inset-x-0 z-20 bg-black/85 border-t border-white/10 backdrop-blur-md py-3 px-4">
+        <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs font-mono text-slate-300">
+          <div class="flex items-center space-x-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Arunai Engineering College • Velu Nagar, Tiruvannamalai - 606 603</span>
+          </div>
+          <div class="flex items-center space-x-4">
+            <span>DNV ISO 9001 Certified</span>
+            <span class="hidden sm:inline">•</span>
+            <span class="text-amber-400 font-bold">Code: 1504</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       PAGE 1: DEDICATED SIGN-IN SCREEN
+       ======================================================== -->
+  <section id="page-login" class="page-view min-h-screen flex flex-col justify-between" style="display:none; background-color: var(--bg-page);">
+    <header class="theme-card border-b px-4 sm:px-6 py-3.5 sm:py-4">
+      <div class="max-w-6xl w-full mx-auto flex items-center justify-between gap-2">
+        <div class="flex items-center space-x-2.5 sm:space-x-3 cursor-pointer" onclick="showPage('home')">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-blue-900 flex items-center justify-center text-white font-bold text-sm sm:text-base shrink-0 shadow-sm">
+            AEC
+          </div>
+          <div>
+            <h1 class="text-xs sm:text-base font-bold text-inherit leading-tight">
+              Arunai Engineering College <span class="hidden sm:inline">(Autonomous)</span>
+            </h1>
+            <p id="portalSubHeader" class="text-[10px] sm:text-[11px] font-mono text-slate-500 truncate max-w-[200px] sm:max-w-none">
+              Student Terminal • Code: 1504
+            </p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2 sm:space-x-3">
+          <button onclick="showPage('home')" class="theme-card-subtle px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 cursor-pointer hover:text-blue-600">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span class="hidden sm:inline">Back to Campus Home</span>
+          </button>
+          <button onclick="toggleTheme()" class="theme-card-subtle px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1.5 cursor-pointer">
+            <i id="themeToggleIcon" class="fa-solid fa-moon"></i>
+            <span id="themeToggleText" class="hidden sm:inline">Dark Mode</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="w-full max-w-md mx-auto my-auto p-4 sm:p-6">
+      <div class="theme-card p-5 sm:p-8 rounded-2xl shadow-sm border">
+        <div class="mb-5 text-center">
+          <div id="loginPortalIcon" class="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-950/70 text-blue-700 dark:text-blue-300 flex items-center justify-center mx-auto mb-2.5 text-xl shadow-xs">
+            <i class="fa-solid fa-user-graduate"></i>
+          </div>
+          <h2 id="loginPortalTitle" class="text-lg sm:text-xl font-bold text-inherit">Student ERP Sign In</h2>
+          <p id="loginPortalDesc" class="text-xs text-slate-500 mt-1 font-mono">Department of Artificial Intelligence & Data Science</p>
+        </div>
+
+        <div class="flex items-center justify-between border-b pb-3 mb-4 text-xs" style="border-color: var(--border-main);">
+          <span class="font-medium text-slate-500">Authentication</span>
+          <div class="flex space-x-1 font-mono text-[11px]">
+            <button type="button" onclick="toggleAuthMode('creds')" id="authModeCreds" class="px-2.5 sm:px-3 py-1 rounded-md font-semibold" style="background-color: var(--primary-subtle); color: var(--primary-text);">
+              <i class="fa-solid fa-key mr-1"></i>PIN
+            </button>
+            <button type="button" onclick="toggleAuthMode('faceid')" id="authModeFace" class="px-2.5 sm:px-3 py-1 rounded-md text-slate-500 hover:text-inherit">
+              <i class="fa-solid fa-expand mr-1"></i>Face ID
+            </button>
+          </div>
+        </div>
+
+        <!-- Clean Sign-in Form without File Picker Box -->
+        <div id="credsForm" class="space-y-4 text-xs">
+          <div>
+            <label id="lblLoginId" class="block font-semibold text-slate-500 mb-1">Registration / Roll Number</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-id-card"></i></span>
+              <input type="text" id="loginId" placeholder="Enter Registration Number" class="w-full border rounded-lg pl-9 pr-3 py-2.5 font-mono outline-none text-xs sm:text-sm" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-500 mb-1">Security Passcode / PIN</label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400"><i class="fa-solid fa-lock"></i></span>
+              <input type="password" id="loginPass" placeholder="Enter PIN" class="w-full border rounded-lg pl-9 pr-9 py-2.5 font-mono outline-none text-xs sm:text-sm" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
+              <button type="button" onclick="togglePassEye()" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
+                <i id="passEyeIcon" class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="button" onclick="handleLogin()" id="btnSubmitLogin" class="w-full py-2.5 bg-blue-900 hover:bg-blue-800 text-white font-semibold rounded-lg shadow-sm transition active:scale-[0.99] flex items-center justify-center space-x-1.5 cursor-pointer">
+            <span>Sign In to Terminal</span>
+            <i class="fa-solid fa-arrow-right text-[11px] ml-1"></i>
+          </button>
+        </div>
+
+        <div id="faceIdSection" class="hidden flex-col items-center space-y-4">
+          <div class="relative w-56 h-56 sm:w-64 sm:h-64 rounded-xl overflow-hidden border border-slate-700 bg-slate-950 flex items-center justify-center shadow-inner">
+            <video id="webcamFeed" autoplay muted playsinline class="w-full h-full object-cover scale-x-[-1] hidden"></video>
+            <div id="cameraPlaceholder" class="flex flex-col items-center justify-center text-slate-400 space-y-2 p-4 text-center">
+              <i class="fa-solid fa-camera text-3xl sm:text-4xl text-slate-500"></i>
+              <span class="text-xs">Initializing Secure Camera Device...</span>
+            </div>
+            <div id="scannerOverlay" class="absolute inset-0 pointer-events-none p-4 flex flex-col justify-between">
+              <div class="flex justify-between">
+                <span class="w-4 h-4 border-t-2 border-l-2 border-blue-500"></span>
+                <span class="w-4 h-4 border-t-2 border-r-2 border-blue-500"></span>
+              </div>
+              <div class="clean-scanner-laser"></div>
+              <div class="flex justify-between">
+                <span class="w-4 h-4 border-b-2 border-l-2 border-blue-500"></span>
+                <span class="w-4 h-4 border-b-2 border-r-2 border-blue-500"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="w-full space-y-2 text-center text-xs">
+            <div id="biometricStatusText" class="font-medium text-slate-500 flex items-center justify-center space-x-2">
+              <span class="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+              <span>Position your face within the frame</span>
+            </div>
+            <div class="w-full bg-slate-200 rounded-full h-1.5 overflow-hidden">
+              <div id="biometricProgress" class="bg-blue-600 h-full w-0 transition-all duration-300"></div>
+            </div>
+          </div>
+
+          <div class="flex space-x-2 w-full pt-1 text-xs">
+            <button type="button" onclick="startFaceScan()" id="btnTriggerScan" class="flex-1 py-2.5 bg-blue-900 hover:bg-blue-800 text-white font-semibold rounded-lg transition flex items-center justify-center space-x-1.5 cursor-pointer">
+              <i class="fa-solid fa-expand text-[11px]"></i>
+              <span>Scan Face ID</span>
+            </button>
+            <button type="button" onclick="toggleAuthMode('creds')" class="px-4 py-2.5 theme-card-subtle font-semibold rounded-lg transition">
+              Cancel
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-5 pt-4 border-t text-center" style="border-color: var(--border-main);">
+          <p id="loginHelperHint" class="text-[11px] text-slate-500 font-mono">
+            Enter your College Registration Number & PIN
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <footer class="theme-card border-t py-3 text-center text-[11px] sm:text-xs text-slate-500 font-mono px-4">
+      &copy; 2026 Arunai Engineering College • ERP Management System
+    </footer>
+  </section>
+
+  <!-- ========================================================
+       PAGE 2: ERP WORKSPACE (STUDENT TERMINAL)
+       ======================================================== -->
+  <section id="page-erp" class="page-view min-h-screen flex flex-col" style="display:none; background-color: var(--bg-page);">
+    <header class="theme-card border-b px-4 sm:px-6 py-3 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+      <div class="flex items-center space-x-2 sm:space-x-3.5">
+        <button onclick="toggleMobileNav()" class="md:hidden p-2 rounded-lg theme-card-subtle text-inherit hover:text-blue-600 cursor-pointer">
+          <i class="fa-solid fa-bars text-sm"></i>
+        </button>
+
+        <div class="w-8 h-8 rounded-lg bg-blue-900 flex items-center justify-center text-white font-bold text-xs sm:text-sm shrink-0">
+          AEC
+        </div>
+        <div>
+          <span class="text-xs sm:text-sm font-bold text-inherit block leading-tight truncate max-w-[170px] sm:max-w-none">
+            Arunai Engineering College
+          </span>
+          <span class="text-[9px] sm:text-[10px] text-slate-500 font-mono uppercase tracking-wide block truncate max-w-[170px] sm:max-w-none">
+            ERP Student Terminal • AI&DS
+          </span>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2 sm:space-x-3.5 text-xs font-mono relative">
+        <button onclick="showPage('home')" class="theme-card-subtle px-2 sm:px-2.5 py-1.5 rounded-lg flex items-center space-x-1 hover:text-blue-600">
+          <i class="fa-solid fa-house"></i>
+          <span class="hidden sm:inline">Home</span>
+        </button>
+
+        <!-- Notification Bell Container -->
+        <div class="relative">
+          <button onclick="toggleNotificationDropdown()" class="relative p-2 rounded-lg theme-card-subtle text-inherit hover:text-blue-600 transition cursor-pointer">
+            <i class="fa-solid fa-bell text-xs sm:text-sm"></i>
+            <span id="notifBadge" class="absolute -top-1 -right-1 w-4 h-4 bg-rose-600 text-white text-[9px] font-bold rounded-full flex items-center justify-center animate-pulse">
+              1
+            </span>
+          </button>
+
+          <div id="notifBackdrop" onclick="toggleNotificationDropdown()" class="fixed inset-0 z-40 hidden"></div>
+
+          <div id="notifDropdown" class="hidden fixed sm:absolute right-3 sm:right-0 top-14 sm:top-full mt-1.5 w-[330px] sm:w-[380px] max-w-[calc(100vw-24px)] theme-card rounded-2xl shadow-2xl border p-3.5 z-50 animate-fade">
+            <div class="flex items-center justify-between border-b pb-2.5 mb-2.5" style="border-color: var(--border-main);">
+              <div class="flex items-center space-x-1.5">
+                <i class="fa-solid fa-bell text-blue-600 text-xs"></i>
+                <span class="font-bold text-xs">Live Endorsement Updates</span>
+              </div>
+              <button onclick="markAllNotifsRead()" class="text-[10px] text-blue-600 hover:underline font-mono">Mark all read</button>
+            </div>
+            <div id="notifDropdownList" class="space-y-2 max-h-[60vh] sm:max-h-80 overflow-y-auto pr-1 custom-scrollbar"></div>
+          </div>
+        </div>
+
+        <button onclick="toggleTheme()" class="theme-card-subtle px-2 sm:px-2.5 py-1.5 rounded-lg flex items-center space-x-1.5 cursor-pointer">
+          <i id="themeToggleIcon2" class="fa-solid fa-moon"></i>
+        </button>
+
+        <button onclick="logout()" class="text-rose-600 hover:text-rose-700 font-semibold p-1 sm:p-0 flex items-center">
+          <i class="fa-solid fa-arrow-right-from-bracket sm:mr-1"></i>
+          <span class="hidden sm:inline">Sign Out</span>
+        </button>
+      </div>
+    </header>
+
+    <div class="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 flex flex-col md:flex-row gap-4 md:gap-6 items-start">
+      <div id="mobileBackdrop" onclick="toggleMobileNav()" class="fixed inset-0 bg-slate-950/50 z-40 hidden md:hidden"></div>
+
+      <!-- Navigation Drawer -->
+      <aside id="mainSidebar" class="fixed md:static inset-y-0 left-0 z-50 md:z-auto w-64 md:w-60 shrink-0 theme-card md:rounded-xl p-3 flex flex-col space-y-1 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-in-out shadow-xl md:shadow-none h-full md:h-auto overflow-y-auto">
+        <div class="flex items-center justify-between md:hidden px-3 py-2 border-b mb-2" style="border-color: var(--border-main);">
+          <span class="text-xs font-bold font-mono">Student Menu</span>
+          <button onclick="toggleMobileNav()" class="p-1 text-slate-400 hover:text-slate-600">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+
+        <div class="px-3 py-1.5 text-[10px] font-mono uppercase text-slate-400 font-bold tracking-wider">
+          Student Portal
+        </div>
+
+        <button onclick="switchTab('dashboard')" id="btn-tab-dashboard" class="sidebar-btn active w-full py-2 px-3 text-left text-xs flex items-center space-x-2.5">
+          <i class="fa-solid fa-chart-pie w-4 text-slate-400"></i>
+          <span>Dashboard</span>
+        </button>
+
+        <button onclick="switchTab('timetable')" id="btn-tab-timetable" class="sidebar-btn w-full py-2 px-3 text-left text-xs flex items-center space-x-2.5">
+          <i class="fa-solid fa-calendar-days w-4 text-slate-400"></i>
+          <span>Class Timetable</span>
+        </button>
+
+        <button onclick="switchTab('leave')" id="btn-tab-leave" class="sidebar-btn w-full py-2 px-3 text-left text-xs flex items-center justify-between">
+          <div class="flex items-center space-x-2.5">
+            <i class="fa-solid fa-file-signature w-4 text-slate-400"></i>
+            <span>Leave Application</span>
+          </div>
+          <span class="w-2 h-2 rounded-full bg-emerald-600"></span>
+        </button>
+
+        <button onclick="switchTab('od_status')" id="btn-tab-od_status" class="sidebar-btn w-full py-2 px-3 text-left text-xs flex items-center justify-between">
+          <div class="flex items-center space-x-2.5">
+            <i class="fa-solid fa-person-walking-arrow-right w-4 text-slate-400"></i>
+            <span>On-Duty Tracker</span>
+          </div>
+          <span class="text-[10px] px-1.5 py-0.5 rounded font-bold font-mono" style="background-color: var(--primary-subtle); color: var(--primary-text);">Active</span>
+        </button>
+
+        <button onclick="switchTab('results')" id="btn-tab-results" class="sidebar-btn w-full py-2 px-3 text-left text-xs flex items-center space-x-2.5">
+          <i class="fa-solid fa-graduation-cap w-4 text-slate-400"></i>
+          <span>Semester Grades</span>
+        </button>
+
+        <button onclick="switchTab('fees')" id="btn-tab-fees" class="sidebar-btn w-full py-2 px-3 text-left text-xs flex items-center space-x-2.5">
+          <i class="fa-solid fa-receipt w-4 text-slate-400"></i>
+          <span>Fee Details</span>
+        </button>
+
+        <button onclick="switchTab('map')" id="btn-tab-map" class="sidebar-btn w-full py-2 px-3 text-left text-xs flex items-center space-x-2.5">
+          <i class="fa-solid fa-map-location-dot w-4 text-slate-400"></i>
+          <span>Campus Wayfinder</span>
+        </button>
+
+        <button onclick="switchTab('password')" id="btn-tab-password" class="sidebar-btn w-full py-2 px-3 text-left text-xs flex items-center space-x-2.5">
+          <i class="fa-solid fa-lock w-4 text-slate-400"></i>
+          <span>Security / Passcode</span>
+        </button>
+      </aside>
+
+      <!-- Main Content Panel -->
+      <main class="flex-1 w-full space-y-4 sm:space-y-6 min-w-0">
+
+        <!-- SUBVIEW: DASHBOARD -->
+        <div id="erp-tab-dashboard" class="erp-subview space-y-4 sm:space-y-6">
+          <div id="studentBroadcastBanner"></div>
+
+          <div class="theme-card p-4 sm:p-6 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-l-4 border-l-blue-900">
+            <div class="flex items-center space-x-3 sm:space-x-4">
+              <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-blue-900 text-white flex items-center justify-center font-bold text-base sm:text-lg shrink-0" id="avatarInitials">
+                --
+              </div>
+              <div class="min-w-0">
+                <div class="flex items-center space-x-2">
+                  <h2 id="dashWelcome" class="text-base sm:text-xl font-bold text-inherit truncate">--</h2>
+                  <span class="px-2 py-0.5 rounded text-[9px] sm:text-[10px] font-mono bg-emerald-100 text-emerald-800 font-semibold shrink-0">Enrolled</span>
+                </div>
+                <p class="text-xs text-slate-500 font-mono mt-0.5 truncate">
+                  Roll: <span id="cardRollNo" class="font-semibold text-inherit">--</span> • <span id="cardDept">--</span>
+                </p>
+              </div>
+            </div>
+            <div class="w-full sm:w-auto text-left sm:text-right font-mono theme-card-subtle px-3.5 py-2 sm:px-4 sm:py-2.5 rounded-lg flex sm:block justify-between items-center">
+              <span class="text-[10px] text-slate-500 uppercase tracking-wider block">Cumulative CGPA</span>
+              <span class="text-sm sm:text-base font-bold text-inherit" id="dashCgpa">--</span>
+            </div>
+          </div>
+
+          <!-- Academic Metrics -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+            <div class="theme-card p-3.5 sm:p-4 rounded-xl">
+              <span class="text-[10px] sm:text-[11px] font-mono uppercase text-slate-500 block">Roll Number</span>
+              <span class="text-base sm:text-lg font-bold text-inherit font-mono mt-1 block" id="metricRoll">--</span>
+              <span class="text-[9px] sm:text-[10px] text-slate-400 mt-1 sm:mt-2 block">Anna Univ Reg</span>
+            </div>
+            <div class="theme-card p-3.5 sm:p-4 rounded-xl">
+              <span class="text-[10px] sm:text-[11px] font-mono uppercase text-slate-500 block">Current Term</span>
+              <span class="text-base sm:text-lg font-bold text-inherit font-mono mt-1 block">Semester VII</span>
+              <span class="text-[9px] sm:text-[10px] text-slate-400 mt-1 sm:mt-2 block">Year: IV • Hall C14</span>
+            </div>
+            <div class="theme-card p-3.5 sm:p-4 rounded-xl">
+              <span class="text-[10px] sm:text-[11px] font-mono uppercase text-slate-500 block">Pending OD Requests</span>
+              <span class="text-base sm:text-lg font-bold text-inherit font-mono mt-1 block" id="statPendingOd">0</span>
+              <span class="text-[9px] sm:text-[10px] text-slate-400 mt-1 sm:mt-2 block">2-Tier Verification Tracker</span>
+            </div>
+            <div class="theme-card p-3.5 sm:p-4 rounded-xl">
+              <div class="flex justify-between items-center">
+                <span class="text-[10px] sm:text-[11px] font-mono uppercase text-slate-500">Attendance</span>
+                <span class="px-1.5 py-0.5 rounded text-[9px] sm:text-[10px] font-bold bg-emerald-100 text-emerald-800">Eligible</span>
+              </div>
+              <span class="text-xl sm:text-2xl font-bold text-emerald-600 font-mono mt-1 block" id="cardAtt">--</span>
+              <span class="text-[9px] sm:text-[10px] text-slate-400 mt-1 sm:mt-2 block">Tracked Periods</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUBVIEW: CLASS TIMETABLE -->
+        <div id="erp-tab-timetable" class="erp-subview hidden space-y-4 sm:space-y-6">
+          <div class="theme-card p-4 sm:p-6 rounded-xl space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b pb-3" style="border-color: var(--border-main);">
+              <div>
+                <h3 class="text-sm sm:text-base font-bold text-inherit">Department of AI & DS Time Table</h3>
+                <p class="text-[11px] sm:text-xs text-slate-500 font-mono">Odd Sem 2026-2027 • Hall: C14 • Sem: VII</p>
+              </div>
+              <div class="self-start sm:self-auto text-[10px] sm:text-xs font-mono px-2.5 py-1 rounded bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 font-semibold border border-blue-200 dark:border-blue-800">
+                Autonomous
+              </div>
+            </div>
+
+            <div class="overflow-x-auto custom-scrollbar -mx-4 sm:mx-0 px-4 sm:px-0">
+              <table class="w-full min-w-[700px] text-xs text-left font-mono border-collapse">
+                <thead>
+                  <tr class="theme-card-subtle border-b" style="border-color: var(--border-main);">
+                    <th class="p-2.5 text-slate-500 uppercase border-r" style="border-color: var(--border-main);">DAY / TIME</th>
+                    <th class="p-2 text-slate-500 text-center">1<br><span class="text-[10px] text-slate-400">9.20-10.10</span></th>
+                    <th class="p-2 text-slate-500 text-center">2<br><span class="text-[10px] text-slate-400">10.10-11.00</span></th>
+                    <th class="p-2 text-slate-500 text-center">3<br><span class="text-[10px] text-slate-400">11.20-12.10</span></th>
+                    <th class="p-2 text-slate-500 text-center">4<br><span class="text-[10px] text-slate-400">12.10-1.00</span></th>
+                    <th class="p-2 text-center text-[10px] font-bold text-amber-700 dark:text-amber-400 bg-amber-50/50 dark:bg-amber-950/30 w-12">LUNCH</th>
+                    <th class="p-2 text-slate-500 text-center">5<br><span class="text-[10px] text-slate-400">1.50-2.40</span></th>
+                    <th class="p-2 text-slate-500 text-center">6<br><span class="text-[10px] text-slate-400">2.40-3.30</span></th>
+                    <th class="p-2 text-slate-500 text-center">7<br><span class="text-[10px] text-slate-400">3.30-4.20</span></th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y" style="border-color: var(--border-main);">
+                  <tr>
+                    <td class="p-2.5 font-bold text-inherit theme-card-subtle border-r" style="border-color: var(--border-main);">MON</td>
+                    <td colspan="2" class="p-2 text-center bg-indigo-50/40 dark:bg-indigo-950/20 font-semibold border-r" style="border-color: var(--border-main);">Skill Dev</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">OBT357/Bio</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">GE3752/TQM</td>
+                    <td rowspan="5" class="p-1 text-center font-bold text-[10px] tracking-widest text-slate-400 theme-card-subtle border-r border-l" style="writing-mode: vertical-lr; border-color: var(--border-main);">1.00 PM - 1.50 PM</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">GE3752/TQM</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">CME365/RET</td>
+                    <td class="p-2 text-center font-medium">AI3021/ITA</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2.5 font-bold text-inherit theme-card-subtle border-r" style="border-color: var(--border-main);">TUE</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">GE3752/TQM</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">CME365/RET</td>
+                    <td colspan="2" class="p-2 text-center bg-indigo-50/40 dark:bg-indigo-950/20 font-semibold border-r" style="border-color: var(--border-main);">Skill Dev</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">OBT357/Bio</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">GE3791/HVE</td>
+                    <td class="p-2 text-center font-medium">GE3752/TQM</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2.5 font-bold text-inherit theme-card-subtle border-r" style="border-color: var(--border-main);">WED</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">GE3791/HVE</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">AI3021/ITA</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">CME365/RET</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">OBT357/Bio</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">CME365/RET</td>
+                    <td colspan="2" class="p-2 text-center bg-indigo-50/40 dark:bg-indigo-950/20 font-semibold">Skill Dev</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2.5 font-bold text-inherit theme-card-subtle border-r" style="border-color: var(--border-main);">THU</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">OBT357/Bio</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">AI3021/ITA</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">AI3021/ITA</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">GE3791/HVE</td>
+                    <td class="p-2 text-center bg-blue-50/50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-300 font-semibold border-r" style="border-color: var(--border-main);">Lib/Coun</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">CME365/RET</td>
+                    <td class="p-2 text-center font-medium">GE3791/HVE</td>
+                  </tr>
+                  <tr>
+                    <td class="p-2.5 font-bold text-inherit theme-card-subtle border-r" style="border-color: var(--border-main);">FRI</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">AI3021/ITA</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">GE3791/HVE</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">GE3752/TQM</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">OBT357/Bio</td>
+                    <td class="p-2 text-center font-medium border-r" style="border-color: var(--border-main);">CME365/RET</td>
+                    <td colspan="2" class="p-2 text-center bg-indigo-50/40 dark:bg-indigo-950/20 font-semibold">Skill Dev</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Course Master -->
+            <div class="pt-4 border-t space-y-3" style="border-color: var(--border-main);">
+              <h4 class="text-xs font-bold text-inherit uppercase tracking-wider font-mono">Course Master & Faculty Allocation</h4>
+              <div class="overflow-x-auto custom-scrollbar -mx-4 sm:mx-0 px-4 sm:px-0">
+                <table class="w-full min-w-[650px] text-xs text-left font-mono">
+                  <thead>
+                    <tr class="theme-card-subtle border-b" style="border-color: var(--border-main);">
+                      <th class="p-2.5">S.No</th>
+                      <th class="p-2.5">Sub Code</th>
+                      <th class="p-2.5">Subject Name</th>
+                      <th class="p-2.5">Faculty Name</th>
+                      <th class="p-2.5">Dept</th>
+                      <th class="p-2.5 text-center">C</th>
+                      <th class="p-2.5 text-center">Hours</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y" style="border-color: var(--border-main);">
+                    <tr>
+                      <td class="p-2.5 font-bold">1</td>
+                      <td class="p-2.5 font-bold text-blue-600 dark:text-blue-400">AI3021</td>
+                      <td class="p-2.5 font-sans font-medium">IT in Agricultural System (ITA)</td>
+                      <td class="p-2.5">Mrs. V. Anitha</td>
+                      <td class="p-2.5 text-slate-500">AP / AIDS</td>
+                      <td class="p-2.5 text-center font-bold">3</td>
+                      <td class="p-2.5 text-center font-bold">5</td>
+                    </tr>
+                    <tr>
+                      <td class="p-2.5 font-bold">2</td>
+                      <td class="p-2.5 font-bold text-blue-600 dark:text-blue-400">GE3791</td>
+                      <td class="p-2.5 font-sans font-medium">Human Values and Ethics (HVE)</td>
+                      <td class="p-2.5">Ms. T. Subathra</td>
+                      <td class="p-2.5 text-slate-500">AP / HAS</td>
+                      <td class="p-2.5 text-center font-bold">2</td>
+                      <td class="p-2.5 text-center font-bold">5</td>
+                    </tr>
+                    <tr>
+                      <td class="p-2.5 font-bold">3</td>
+                      <td class="p-2.5 font-bold text-blue-600 dark:text-blue-400">GE3752</td>
+                      <td class="p-2.5 font-sans font-medium">Total Quality Management (TQM)</td>
+                      <td class="p-2.5">Mr. R. Senthil</td>
+                      <td class="p-2.5 text-slate-500">ASP / Mech</td>
+                      <td class="p-2.5 text-center font-bold">3</td>
+                      <td class="p-2.5 text-center font-bold">5</td>
+                    </tr>
+                    <tr>
+                      <td class="p-2.5 font-bold">4</td>
+                      <td class="p-2.5 font-bold text-blue-600 dark:text-blue-400">CME365</td>
+                      <td class="p-2.5 font-sans font-medium">Renewable Energy Technologies (RET)</td>
+                      <td class="p-2.5">Mr. E. Prakash</td>
+                      <td class="p-2.5 text-slate-500">AP / Mech</td>
+                      <td class="p-2.5 text-center font-bold">3</td>
+                      <td class="p-2.5 text-center font-bold">6</td>
+                    </tr>
+                    <tr>
+                      <td class="p-2.5 font-bold">5</td>
+                      <td class="p-2.5 font-bold text-blue-600 dark:text-blue-400">OBT357</td>
+                      <td class="p-2.5 font-sans font-medium">Biotechnology in Healthcare (Bio)</td>
+                      <td class="p-2.5">Ms. N. RithiPriyanka</td>
+                      <td class="p-2.5 text-slate-500">AP / Biotech</td>
+                      <td class="p-2.5 text-center font-bold">3</td>
+                      <td class="p-2.5 text-center font-bold">5</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUBVIEW: ON-DUTY (OD) TRACKER -->
+        <div id="erp-tab-od_status" class="erp-subview hidden space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
+            <div class="lg:col-span-5 theme-card p-4 sm:p-6 rounded-xl space-y-4">
+              <div class="border-b pb-3" style="border-color: var(--border-main);">
+                <h3 class="text-sm font-bold text-inherit">Submit On-Duty (OD) Application</h3>
+                <p class="text-xs text-slate-500">Tier-1 Counsellor &rarr; Tier-2 HOD Digital Approval</p>
+              </div>
+
+              <div class="space-y-3 text-xs">
+                <div>
+                  <label class="block font-medium text-slate-500 mb-1">Event Category</label>
+                  <select id="odCategory" class="w-full border rounded-lg px-3 py-2 outline-none" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);">
+                    <option value="National Hackathon">National AI Hackathon / Expo</option>
+                    <option value="Paper Symposium">Technical Paper Presentation</option>
+                    <option value="Sports Tournament">Anna University Zonal Tournament</option>
+                    <option value="Placement Drive">Corporate Internship / Placement Drive</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block font-medium text-slate-500 mb-1">Event / Paper Title</label>
+                  <input type="text" id="odTitle" placeholder="e.g. Smart India Hackathon Finals" class="w-full border rounded-lg px-3 py-2 outline-none" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
+                </div>
+                <div>
+                  <label class="block font-medium text-slate-500 mb-1">Host Institution & Venue</label>
+                  <input type="text" id="odVenue" placeholder="e.g. IIT Madras Research Park" class="w-full border rounded-lg px-3 py-2 outline-none" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <label class="block font-medium text-slate-500 mb-1">From Date</label>
+                    <input type="date" id="odFrom" class="w-full border rounded-lg px-2.5 py-1.5 outline-none font-mono" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
+                  </div>
+                  <div>
+                    <label class="block font-medium text-slate-500 mb-1">To Date</label>
+                    <input type="date" id="odTo" class="w-full border rounded-lg px-2.5 py-1.5 outline-none font-mono" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
+                  </div>
+                </div>
+                <button type="button" onclick="handleOdSubmit()" class="w-full py-2.5 bg-blue-900 hover:bg-blue-800 text-white font-semibold rounded-lg shadow-sm transition cursor-pointer">
+                  Dispatch OD to Counsellor Review Desk
+                </button>
+              </div>
+            </div>
+
+            <div class="lg:col-span-7 theme-card p-4 sm:p-6 rounded-xl space-y-4">
+              <div class="flex items-center justify-between border-b pb-3" style="border-color: var(--border-main);">
+                <div>
+                  <h3 class="text-sm font-bold text-inherit">My On-Duty History & Signatures</h3>
+                  <p class="text-xs text-slate-500">Live Status Tracker for Logged-in Student</p>
+                </div>
+                <span class="text-xs font-mono font-medium px-2 py-0.5 rounded" style="background-color: var(--primary-subtle); color: var(--primary-text);">Live Tracker</span>
+              </div>
+              <div id="odLedgerList" class="space-y-3"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUBVIEW: LEAVE MANAGEMENT -->
+        <div id="erp-tab-leave" class="erp-subview hidden space-y-6">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 items-start">
+            <div class="lg:col-span-5 theme-card p-4 sm:p-6 rounded-xl space-y-4">
+              <div class="border-b pb-3" style="border-color: var(--border-main);">
+                <h3 class="text-sm font-bold text-inherit">Official Leave Application</h3>
+                <p class="text-xs text-slate-500">Tier-1 Counsellor &rarr; Tier-2 HOD Digital Approval</p>
+              </div>
+
+              <div class="space-y-3 text-xs">
+                <div>
+                  <label class="block font-medium text-slate-500 mb-1">Student Full Name</label>
+                  <input type="text" id="leaveStudentName" readonly class="w-full border rounded-lg px-3 py-2 font-medium" style="background-color: var(--bg-subtle); border-color: var(--border-main); color: var(--text-main);"/>
+                </div>
+                <div>
+                  <label class="block font-medium text-slate-500 mb-1">Roll Identification</label>
+                  <input type="text" id="leaveRegNo" readonly class="w-full border rounded-lg px-3 py-2 font-mono font-bold" style="background-color: var(--bg-subtle); border-color: var(--border-main); color: var(--primary-text);"/>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div>
+                    <label class="block font-medium text-slate-500 mb-1">Leave Start Date</label>
+                    <input type="date" id="leaveFrom" class="w-full border rounded-lg px-2.5 py-1.5 outline-none font-mono" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
+                  </div>
+                  <div>
+                    <label class="block font-medium text-slate-500 mb-1">Leave End Date</label>
+                    <input type="date" id="leaveTo" class="w-full border rounded-lg px-2.5 py-1.5 outline-none font-mono" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
+                  </div>
+                </div>
+                <div>
+                  <label class="block font-medium text-slate-500 mb-1">Reason for Leave</label>
+                  <textarea id="leaveReason" rows="2" placeholder="Academic purpose / medical necessity..." class="w-full border rounded-lg px-3 py-2 outline-none" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"></textarea>
+                </div>
+                <div>
+                  <label class="block font-medium text-slate-500 mb-1">Permanent Residential Address</label>
+                  <textarea id="leaveAddress" rows="2" class="w-full border rounded-lg px-3 py-2 outline-none" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"></textarea>
+                </div>
+                <button type="button" onclick="handleLeaveSubmit()" class="w-full py-2.5 bg-blue-900 hover:bg-blue-800 text-white font-semibold rounded-lg shadow-sm transition cursor-pointer">
+                  Submit to Counsellor Review Desk
+                </button>
+              </div>
+            </div>
+
+            <div class="lg:col-span-7 theme-card p-4 sm:p-6 rounded-xl space-y-4">
+              <div class="flex items-center justify-between border-b pb-3" style="border-color: var(--border-main);">
+                <div>
+                  <h3 class="text-sm font-bold text-inherit">My Leave Approval Status</h3>
+                  <p class="text-xs text-slate-500">Live Status Tracker for Logged-in Student</p>
+                </div>
+                <span class="text-xs font-mono font-medium px-2 py-0.5 rounded" style="background-color: var(--primary-subtle); color: var(--primary-text);">Live Status</span>
+              </div>
+              <div id="studentLeaveList" class="space-y-3"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SUBVIEW: UNIVERSITY RESULTS -->
+        <div id="erp-tab-results" class="erp-subview hidden theme-card p-4 sm:p-6 rounded-xl space-y-4">
+          <h3 class="text-sm font-bold text-inherit">University Grade Transcript (Semester 1 - 6)</h3>
+          <div class="overflow-x-auto custom-scrollbar -mx-4 sm:mx-0 px-4 sm:px-0">
+            <table class="w-full min-w-[550px] text-xs text-left">
+              <thead class="theme-card-subtle border-b" style="border-color: var(--border-main);">
+                <tr><th class="p-3 font-mono">Course Code</th><th class="p-3">Course Title</th><th class="p-3 font-mono">Credits</th><th class="p-3 font-mono">Grade</th><th class="p-3">Status</th></tr>
+              </thead>
+              <tbody class="divide-y" style="border-color: var(--border-main);">
+                <tr><td class="p-3 font-mono font-medium" style="color: var(--primary-text);">AD3501</td><td class="p-3">Deep Learning Architectures</td><td class="p-3 font-mono">4</td><td class="p-3 font-mono font-bold">O</td><td class="p-3 font-semibold text-emerald-600">PASS</td></tr>
+                <tr><td class="p-3 font-mono font-medium" style="color: var(--primary-text);">AD3502</td><td class="p-3">Natural Language Processing</td><td class="p-3 font-mono">4</td><td class="p-3 font-mono font-bold">A+</td><td class="p-3 font-semibold text-emerald-600">PASS</td></tr>
+                <tr><td class="p-3 font-mono font-medium" style="color: var(--primary-text);">CW3551</td><td class="p-3">Data Engineering Pipelines</td><td class="p-3 font-mono">3</td><td class="p-3 font-mono font-bold">A+</td><td class="p-3 font-semibold text-emerald-600">PASS</td></tr>
+                <tr><td class="p-3 font-mono font-medium" style="color: var(--primary-text);">CS3591</td><td class="p-3">Computer Networks & Telemetry</td><td class="p-3 font-mono">3</td><td class="p-3 font-mono font-bold">A</td><td class="p-3 font-semibold text-emerald-600">PASS</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SUBVIEW: FEE STATUS -->
+        <div id="erp-tab-fees" class="erp-subview hidden theme-card p-4 sm:p-6 rounded-xl space-y-4">
+          <h3 class="text-sm font-bold text-inherit">Fee Clearance & Examination Eligibility</h3>
+          <div class="p-4 theme-card-subtle rounded-xl flex items-center justify-between">
+            <div>
+              <span class="text-xs text-slate-500 font-medium block">Current Term (2026 - 2027)</span>
+              <p class="text-base font-bold text-inherit mt-0.5">All Dues Cleared (₹0.00 Outstanding)</p>
+            </div>
+            <span class="px-3 py-1 bg-emerald-100 text-emerald-800 rounded-lg text-xs font-semibold">
+              HALL TICKET ELIGIBLE
+            </span>
+          </div>
+        </div>
+
+        <!-- SUBVIEW: CAMPUS WAYFINDER -->
+        <div id="erp-tab-map" class="erp-subview hidden theme-card p-4 sm:p-6 rounded-xl space-y-4">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-3" style="border-color: var(--border-main);">
+            <div>
+              <h3 class="text-sm font-bold text-inherit">Campus Layout & Wayfinder</h3>
+              <p class="text-xs text-slate-500">Walking path guide starting from Arunai Main Gateway</p>
+            </div>
+            <div class="flex items-center gap-1.5 overflow-x-auto pb-1 custom-scrollbar text-xs font-medium">
+              <button onclick="setMapRoute('admin')" class="px-2.5 py-1 rounded theme-card-subtle text-inherit whitespace-nowrap">Admin Block</button>
+              <button onclick="setMapRoute('library')" class="px-2.5 py-1 rounded theme-card-subtle text-inherit whitespace-nowrap">Library</button>
+              <button onclick="setMapRoute('aids')" class="px-2.5 py-1 rounded theme-card-subtle text-inherit whitespace-nowrap">AI&DS (C14)</button>
+              <button onclick="setMapRoute('exam')" class="px-2.5 py-1 rounded theme-card-subtle text-inherit whitespace-nowrap">Exam Cell</button>
+              <button onclick="setMapRoute('canteen')" class="px-2.5 py-1 rounded theme-card-subtle text-inherit whitespace-nowrap">Canteen</button>
+            </div>
+          </div>
+
+          <div class="w-full h-64 sm:h-80 bg-slate-900 rounded-xl overflow-hidden relative flex items-center justify-center p-2 sm:p-3">
+            <svg viewBox="0 0 800 340" class="w-full h-full">
+              <path d="M 60 170 L 740 170" stroke="#334155" stroke-width="30" stroke-linecap="round"/>
+              <path d="M 400 40 L 400 300" stroke="#334155" stroke-width="24" stroke-linecap="round"/>
+              <path id="mapNavLine" d="" stroke="#60a5fa" stroke-width="4" stroke-dasharray="6 6" stroke-linecap="round" fill="none" class="transition-all duration-300"/>
+
+              <g transform="translate(40, 130)">
+                <rect width="100" height="80" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                <text x="50" y="38" fill="#93c5fd" font-size="11" font-weight="bold" text-anchor="middle">MAIN GATE</text>
+                <text x="50" y="55" fill="#94a3b8" font-size="9" text-anchor="middle">Portico Hub</text>
+              </g>
+
+              <g transform="translate(220, 40)">
+                <rect width="120" height="70" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                <text x="60" y="34" fill="#f8fafc" font-size="11" font-weight="bold" text-anchor="middle">ADMIN BLOCK</text>
+                <text x="60" y="50" fill="#94a3b8" font-size="9" text-anchor="middle">Principal Office</text>
+              </g>
+
+              <g transform="translate(460, 40)">
+                <rect width="120" height="70" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                <text x="60" y="34" fill="#f8fafc" font-size="11" font-weight="bold" text-anchor="middle">LIBRARY</text>
+                <text x="60" y="50" fill="#94a3b8" font-size="9" text-anchor="middle">Digital Wing</text>
+              </g>
+
+              <g transform="translate(220, 220)">
+                <rect width="120" height="70" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                <text x="60" y="34" fill="#bfdbfe" font-size="11" font-weight="bold" text-anchor="middle">AI&DS DEPT</text>
+                <text x="60" y="50" fill="#94a3b8" font-size="9" text-anchor="middle">Hall C14 / Labs</text>
+              </g>
+
+              <g transform="translate(460, 220)">
+                <rect width="120" height="70" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                <text x="60" y="34" fill="#fde68a" font-size="11" font-weight="bold" text-anchor="middle">COE WING</text>
+                <text x="60" y="50" fill="#94a3b8" font-size="9" text-anchor="middle">Exam Cell</text>
+              </g>
+
+              <g transform="translate(640, 130)">
+                <rect width="110" height="80" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1.5"/>
+                <text x="55" y="38" fill="#a7f3d0" font-size="11" font-weight="bold" text-anchor="middle">CANTEEN</text>
+                <text x="55" y="55" fill="#94a3b8" font-size="9" text-anchor="middle">& Bus Terminal</text>
+              </g>
+
+              <g transform="translate(90, 170)">
+                <circle r="6" fill="#3b82f6" stroke="#ffffff" stroke-width="2"/>
+              </g>
+            </svg>
+          </div>
+          <div id="routeDesc" class="p-2.5 rounded-lg theme-card-subtle text-xs text-center font-medium">
+            Click any campus building to preview direct walking route.
+          </div>
+        </div>
+
+        <div id="erp-tab-password" class="erp-subview hidden theme-card p-4 sm:p-6 rounded-xl max-w-md space-y-4">
+          <h3 class="text-sm font-bold text-inherit">Update Security Passcode</h3>
+          <input type="password" placeholder="New PIN" class="w-full border rounded-lg p-2.5 outline-none text-xs" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
+          <button class="w-full py-2 bg-blue-900 text-white font-semibold rounded-lg hover:bg-blue-800 transition text-xs">Update Passcode</button>
+        </div>
+      </main>
+    </div>
+
+    <footer class="mt-auto theme-card border-t py-3 text-center text-[11px] sm:text-xs font-mono text-slate-500 px-4">
+      &copy; 2026 Arunai Engineering College • Department of Artificial Intelligence & Data Science
+    </footer>
+  </section>
+
+  <!-- ========================================================
+       PAGE 3: STAFF CONSOLE WITH UPLOAD SLOT
+       ======================================================== -->
+  <section id="page-staff" class="page-view min-h-screen p-3 sm:p-4 md:p-6 flex flex-col justify-between" style="display:none; background-color: var(--bg-page);">
+    <div class="max-w-6xl w-full mx-auto space-y-4 sm:space-y-6">
+      <div class="theme-card p-4 sm:p-5 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm border-l-4 border-l-indigo-600">
+        <div>
+          <span class="text-xs font-semibold block" style="color: var(--primary-text);">Tier-1 Verification • Faculty Desk</span>
+          <h2 id="staffNameHeader" class="text-base sm:text-lg font-bold text-inherit">Mrs. V. Anitha (Counsellor / AP AIDS)</h2>
+        </div>
+        <div class="flex items-center space-x-2 sm:space-x-3 self-end sm:self-auto">
+          <button onclick="showPage('home')" class="theme-card-subtle px-3 py-1.5 rounded-lg text-xs font-semibold hover:text-blue-600">
+            <i class="fa-solid fa-house mr-1"></i>Home
+          </button>
+          <button onclick="logout()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-semibold">
+            <i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>Sign Out
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-6 space-y-6">
+          <div class="theme-card p-4 sm:p-5 rounded-xl space-y-4 shadow-sm">
+            <div class="flex justify-between items-center border-b pb-3" style="border-color: var(--border-main);">
+              <div>
+                <h3 class="text-sm font-bold text-inherit">Pending Student Leave Requests</h3>
+                <p class="text-xs text-slate-500">Tier-1 Counsellor Action</p>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-amber-100 text-amber-800">Counsellor Review</span>
+            </div>
+            <div id="staffLeavePendingList" class="space-y-3 text-xs"></div>
+          </div>
+
+          <div class="theme-card p-4 sm:p-5 rounded-xl space-y-4 shadow-sm">
+            <div class="flex justify-between items-center border-b pb-3" style="border-color: var(--border-main);">
+              <div>
+                <h3 class="text-sm font-bold text-inherit">Pending On-Duty (OD) Requests</h3>
+                <p class="text-xs text-slate-500">Academic & Hackathon OD Endorsements</p>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-indigo-100 text-indigo-800">Tier-1 OD</span>
+            </div>
+            <div id="staffOdPendingList" class="space-y-3 text-xs"></div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6 space-y-6">
+          <div class="theme-card p-4 sm:p-5 rounded-xl space-y-4 shadow-sm">
+            <div class="flex justify-between items-center border-b pb-3" style="border-color: var(--border-main);">
+              <div>
+                <h3 class="text-sm font-bold text-inherit">Course Material & Department Upload Slot</h3>
+                <p class="text-xs text-slate-500 font-mono">Upload syllabus notes, internal marks, or question banks</p>
+              </div>
+              <span class="text-xs font-mono font-medium px-2 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
+                Staff Vault
+              </span>
+            </div>
+
+            <div class="space-y-3 text-xs">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-medium text-slate-500 mb-1">Target Subject Code & Name</label>
+                  <select id="uploadSubject" class="w-full border rounded-lg px-3 py-2 outline-none font-mono" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);">
+                    <option value="AI3021">AI3021 - IT in Agricultural System (ITA)</option>
+                    <option value="GE3791">GE3791 - Human Values and Ethics (HVE)</option>
+                    <option value="GE3752">GE3752 - Total Quality Management (TQM)</option>
+                    <option value="CME365">CME365 - Renewable Energy Technologies (RET)</option>
+                    <option value="OBT357">OBT357 - Biotechnology in Healthcare (Bio)</option>
+                    <option value="SKILL">SKILL - Skill Development Class</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block font-medium text-slate-500 mb-1">Document Category</label>
+                  <select id="uploadCategory" class="w-full border rounded-lg px-3 py-2 outline-none" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);">
+                    <option value="Lecture Notes">Lecture Notes / PPT Deck</option>
+                    <option value="Internal Assessment">Internal Marks Sheet (CAT 1/2)</option>
+                    <option value="Question Bank">Question Bank / Model Paper</option>
+                    <option value="Assignment / Lab">Assignment Manual / Lab Guide</option>
+                    <option value="Notice">Official Circular / Notice</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block font-medium text-slate-500 mb-1">Document Title / Description</label>
+                <input type="text" id="uploadTitle" placeholder="e.g. Unit 3 - Precision Agriculture IoT Architectures" class="w-full border rounded-lg px-3 py-2 outline-none" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
+              </div>
+
+              <div>
+                <label class="block font-medium text-slate-500 mb-1">Select File (.pdf, .docx, .xlsx, .zip)</label>
+                <div id="dropZone" class="border-2 border-dashed rounded-xl p-4 sm:p-5 text-center cursor-pointer transition hover:border-blue-500" style="border-color: var(--border-main); background-color: var(--bg-subtle);" onclick="document.getElementById('staffFileInput').click()">
+                  <i class="fa-solid fa-cloud-arrow-up text-3xl text-blue-500 mb-1"></i>
+                  <p class="font-medium text-inherit" id="dropZonePrompt">Click to browse or drag file here</p>
+                  <p class="text-[10px] text-slate-400 font-mono mt-0.5">Maximum file limit: 25 MB</p>
+                  <input type="file" id="staffFileInput" class="hidden" onchange="previewSelectedFile(event)" />
+                </div>
+              </div>
+
+              <button type="button" onclick="handleStaffFileUpload()" class="w-full py-2.5 bg-blue-900 hover:bg-blue-800 text-white font-semibold rounded-lg shadow-sm transition flex items-center justify-center space-x-2 cursor-pointer">
+                <i class="fa-solid fa-upload text-[11px]"></i>
+                <span>Publish to ERP Course Repository</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="theme-card p-4 sm:p-5 rounded-xl space-y-4 shadow-sm">
+            <div class="flex items-center justify-between border-b pb-3" style="border-color: var(--border-main);">
+              <div>
+                <h3 class="text-sm font-bold text-inherit">Published Course Repository</h3>
+                <p class="text-xs text-slate-500">Live documents available to students</p>
+              </div>
+              <span id="uploadCountBadge" class="text-xs font-mono font-medium px-2 py-0.5 rounded" style="background-color: var(--primary-subtle); color: var(--primary-text);">
+                0 Documents
+              </span>
+            </div>
+            <div id="uploadedFilesList" class="space-y-2.5 text-xs"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="theme-card border-t py-3 text-center text-[11px] sm:text-xs text-slate-500 font-mono mt-6">
+      &copy; 2026 Arunai Engineering College • Faculty ERP Management Module
+    </footer>
+  </section>
+
+  <!-- ========================================================
+       PAGE 4: HOD EXECUTIVE CONSOLE WITH MESSAGE BOX
+       ======================================================== -->
+  <section id="page-hod" class="page-view min-h-screen p-3 sm:p-4 md:p-6 flex flex-col justify-between" style="display:none; background-color: var(--bg-page);">
+    <div class="max-w-6xl w-full mx-auto space-y-4 sm:space-y-6">
+      <div class="theme-card p-4 sm:p-5 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm border-l-4 border-l-amber-600">
+        <div>
+          <span class="text-xs font-semibold block" style="color: var(--primary-text);">Tier-2 Executive Desk • Head of Department</span>
+          <h2 class="text-base sm:text-lg font-bold text-inherit">Prof. S. Noorul Hassan (Head of Department - AI&DS)</h2>
+        </div>
+        <div class="flex items-center space-x-2 sm:space-x-3 self-end sm:self-auto">
+          <button onclick="showPage('home')" class="theme-card-subtle px-3 py-1.5 rounded-lg text-xs font-semibold hover:text-blue-600">
+            <i class="fa-solid fa-house mr-1"></i>Home
+          </button>
+          <button onclick="logout()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-semibold">
+            <i class="fa-solid fa-arrow-right-from-bracket mr-1"></i>Sign Out
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-5 space-y-6">
+          <div class="theme-card p-4 sm:p-5 rounded-xl space-y-4 shadow-sm">
+            <div class="flex justify-between items-center border-b pb-3" style="border-color: var(--border-main);">
+              <div>
+                <h3 class="text-sm font-bold text-inherit">Tier-2 Leave Authorizations</h3>
+                <p class="text-xs text-slate-500">Counsellor-endorsed applications</p>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-emerald-100 text-emerald-800">Final Tier</span>
+            </div>
+            <div id="hodLeavePendingList" class="space-y-3 text-xs"></div>
+          </div>
+
+          <div class="theme-card p-4 sm:p-5 rounded-xl space-y-4 shadow-sm">
+            <div class="flex justify-between items-center border-b pb-3" style="border-color: var(--border-main);">
+              <div>
+                <h3 class="text-sm font-bold text-inherit">Tier-2 OD Authorizations</h3>
+                <p class="text-xs text-slate-500">Counsellor-approved OD applications</p>
+              </div>
+              <span class="text-[10px] font-mono px-2 py-0.5 rounded font-bold bg-blue-100 text-blue-800">HOD Sanction</span>
+            </div>
+            <div id="hodOdPendingList" class="space-y-3 text-xs"></div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-7 space-y-6">
+          <div class="theme-card p-4 sm:p-5 rounded-xl space-y-4 shadow-sm">
+            <div class="flex items-center justify-between border-b pb-3" style="border-color: var(--border-main);">
+              <div>
+                <h3 class="text-sm font-bold text-inherit flex items-center">
+                  <i class="fa-solid fa-bullhorn text-blue-600 mr-2"></i>
+                  Official HOD Announcement & Circular Dispatch Box
+                </h3>
+                <p class="text-xs text-slate-500 font-mono">Dispatches instant alert notifications directly to student terminals</p>
+              </div>
+              <span class="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-800">
+                Live Push
+              </span>
+            </div>
+
+            <div class="space-y-3 text-xs">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label class="block font-medium text-slate-500 mb-1">Urgency Priority</label>
+                  <select id="msgPriority" class="w-full border rounded-lg px-3 py-2 outline-none font-semibold" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);">
+                    <option value="Urgent">🚨 High Priority / Urgent Notice</option>
+                    <option value="Important">⚠️ Academic Alert / Mandatory</option>
+                    <option value="General">ℹ️ General Information / Circular</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block font-medium text-slate-500 mb-1">Target Audience Group</label>
+                  <select id="msgAudience" class="w-full border rounded-lg px-3 py-2 outline-none font-mono" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);">
+                    <option value="All AI&DS Students">All AI&DS Students (Years I - IV)</option>
+                    <option value="Year IV (Sem VII)">Year IV / Semester VII (Hall C14)</option>
+                    <option value="Class CR & Representatives">Class Representatives Only</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label class="block font-medium text-slate-500 mb-1">Notice Headline / Subject</label>
+                <input type="text" id="msgTitle" placeholder="e.g. Mandatory CAT-1 Review Meeting & GPU Lab Verification" class="w-full border rounded-lg px-3 py-2 outline-none font-medium" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"/>
+              </div>
+
+              <div>
+                <label class="block font-medium text-slate-500 mb-1">Detailed Message Content</label>
+                <textarea id="msgBody" rows="3" placeholder="Type the official message instructions to students here..." class="w-full border rounded-lg px-3 py-2 outline-none" style="background-color: var(--bg-input); border-color: var(--border-main); color: var(--text-main);"></textarea>
+              </div>
+
+              <button type="button" onclick="handleHodBroadcast()" class="w-full py-2.5 bg-blue-900 hover:bg-blue-800 text-white font-semibold rounded-lg shadow-sm transition flex items-center justify-center space-x-2 cursor-pointer">
+                <i class="fa-solid fa-paper-plane text-[11px]"></i>
+                <span>Broadcast Notification to Students</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="theme-card p-4 sm:p-5 rounded-xl space-y-4 shadow-sm">
+            <div class="flex items-center justify-between border-b pb-3" style="border-color: var(--border-main);">
+              <div>
+                <h3 class="text-sm font-bold text-inherit">Active Dispatched Circulars</h3>
+                <p class="text-xs text-slate-500">Currently active on student portal feeds</p>
+              </div>
+              <span id="activeNotifCount" class="text-xs font-mono font-medium px-2 py-0.5 rounded" style="background-color: var(--primary-subtle); color: var(--primary-text);">
+                1 Notice Active
+              </span>
+            </div>
+            <div id="hodDispatchedList" class="space-y-2.5 text-xs"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="theme-card border-t py-3 text-center text-[11px] sm:text-xs text-slate-500 font-mono mt-6">
+      &copy; 2026 Arunai Engineering College • Office of the Head of Department
+    </footer>
+  </section>
+
+  <!-- Connect External JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
